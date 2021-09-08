@@ -60,9 +60,9 @@ MOVE_V:
 	li s0,2
 	beq t6,s0,MOVE_V_END	#se o objeto no destino for parede, n move
 	add t6,t2,t3			#t6 = endereco original
-	lw zero,0(t6)			#coloca 0 no endereco original
-	lw a1,0(t5)				#coloca o objeto no novo endereco
-	lb t1,1(a2)				#muda a posicao do objeto
+	sw zero,0(t6)			#coloca 0 no endereco original
+	sw a1,0(t5)				#coloca o objeto no novo endereco
+	sb t1,1(a2)				#muda a posicao do objeto
 
 
 MOVE_V_END:

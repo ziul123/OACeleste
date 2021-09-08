@@ -83,24 +83,7 @@ a:
 
 	jal MOVE_H
 
-	#lb t0,0(s1)		#coluna onde o player esta
-	#beqz t0,a_END	#se for a coluna 0, n move para esquerda
-	#lb t1,1(s1)		#linha onde o player esta
-	#slli t1,t1,2
-	#add t1,t1,s0	#endereco da linha na matriz
-	#lw t2,0(t1)		#t2 = linha
-	#addi t0,t0,-1
-	#slli t5,t0,2
-	#add t5,t5,t2
-	#lw t3,0(t5)		#t3 = o que tem a esquerda do player
-	#li t4,2			#objeto que impede o player
-	#beq t3,t4,a_END
-	#li t4,1
-	#sw t4,0(t5)
-	#sw zero,4(t5)
-	#sb t0,0(s1)
-	
-#a_END:
+
 	li a0,0
 	j GET_KEY_END
 
@@ -124,7 +107,13 @@ e:
 	j GET_KEY_END
 
 s:
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
 
+	jal MOVE_V
 
 
 
@@ -133,7 +122,13 @@ s:
 
 w:
 
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
 
+	jal MOVE_V
 
 
 
