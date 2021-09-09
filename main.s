@@ -17,9 +17,9 @@ MAIN:
 
 
 	la a0,MATRIZ
-	la t0,M_SIZE
-	lw a1,0(t0)
-	lw a2,4(t0)
+	la a1,M_SIZE
+	#lw a1,0(t0)
+	#lw a2,4(t0)
 	jal M_SHOW
 
 	jal GET_KEY
@@ -44,6 +44,7 @@ END:
 # a = 0x61
 # d = 0x64
 # e = 0x65
+# p = 0x70
 # q = 0x71
 # s = 0x73
 # w = 0x77
@@ -65,6 +66,12 @@ GET_KEY:
 	li t0,0x65
 	beq a0,t0,e
 
+	li t0,0x70
+	beq a0,t0,p
+	
+	li t0,0x71
+	beq a0,t0,q
+
 	li t0,0x73
 	beq a0,t0,s
 	
@@ -80,6 +87,7 @@ a:
 	la a2,PLAYER_POS
 	la a3,MATRIZ
 	la a4,M_SIZE
+	li a5,0
 
 	jal MOVE_H
 
@@ -94,6 +102,7 @@ d:
 	la a2,PLAYER_POS
 	la a3,MATRIZ
 	la a4,M_SIZE
+	li a5,0
 
 	jal MOVE_H
 
@@ -103,8 +112,36 @@ d:
 
 
 e:
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MOVE_DG
+	
+	li a0,0
+	j GET_KEY_END
+
+p:
 	li a0,-1
 	j GET_KEY_END
+
+
+q:
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MOVE_DG
+
+	li a0,0
+	j GET_KEY_END
+
 
 s:
 	li a0,1
@@ -112,6 +149,7 @@ s:
 	la a2,PLAYER_POS
 	la a3,MATRIZ
 	la a4,M_SIZE
+	li a5,0
 
 	jal MOVE_V
 
@@ -127,6 +165,7 @@ w:
 	la a2,PLAYER_POS
 	la a3,MATRIZ
 	la a4,M_SIZE
+	li a5,0
 
 	jal MOVE_V
 
@@ -163,7 +202,7 @@ V_SHOW_LOOP:
 	
 	ret
 
-#a0= int vetor[][], a1=linhas, a2=colunas
+#a0= int matriz[][], a1= (n_linhas, n_colunas)
 #return void
 M_SHOW:
 	addi sp,sp,-20
@@ -173,9 +212,9 @@ M_SHOW:
 	sw s2,12(sp)
 	sw s3,16(sp)
 	
-	mv s0,a0	#s0 = vetor
-	mv s1,a1	#s1 = linhas
-	mv s2,a2	#s2 = colunas
+	mv s0,a0	#s0 = matriz
+	lw s1,0(a1)	#s1 = linhas
+	lw s2,4(a1)	#s2 = colunas
 	li s3,0		#contador
 	
 M_SHOW_LOOP:
@@ -201,4 +240,4 @@ M_SHOW_LOOP:
 	
 	ret
 	
-.include "teste.s"
+.include "movimentacao.s"
