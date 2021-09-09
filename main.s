@@ -1,41 +1,73 @@
 .data
 
-LINHA0:	.word 0,0,2,0
-LINHA1:	.word 2,0,0,1
-LINHA2:	.word 0,0,0,2
-LINHA3:	.word 0,2,0,0
-MATRIZ:	.word LINHA0,LINHA1,LINHA2,LINHA3
-PLAYER_POS:	.byte 3,1	#coluna,linha
-M_SIZE:	.word 4,4		#n_linhas, n_colunas
+LINHA0:		.word 1,0,0,0,0,0,0,0
+LINHA1:		.word 0,0,0,0,2,0,0,0
+LINHA2:		.word 0,0,0,0,2,2,0,0
+LINHA3:		.word 0,0,0,0,0,0,0,2
+LINHA4:		.word 0,0,0,0,0,0,2,2
+LINHA5:		.word 2,2,2,2,2,2,2,2
+MATRIZ:		.word LINHA0,LINHA1,LINHA2,LINHA3,LINHA4,LINHA5
+PLAYER_POS:	.byte 0,0	#coluna,linha
+M_SIZE:		.word 6,8	#n_linhas, n_colunas
+PD_PULAR:	.byte 0		#0 n pode, 1 pode
 
-esp:	.string " "
-n:		.string "\n"
+esp:		.string " "
+n:			.string "\n"
 
 .text
 
 MAIN:
-
-
 	la a0,MATRIZ
 	la a1,M_SIZE
-	#lw a1,0(t0)
-	#lw a2,4(t0)
 	jal M_SHOW
+	
+	la a0,n
+	li a7,4
+	ecall
+
+LOOP:
+
 
 	jal GET_KEY
 	
 	bltz a0,END
+	bgtz a0,NO_KEY
+	
+	la a0,MATRIZ
+	la a1,M_SIZE
+	jal M_SHOW
 	
 	la a0,n
 	li a7,4
 	ecall
 	
-	j MAIN
+NO_KEY:	
+	csrr t0,3073
+	sub t0,t0,s11		#s11 tem o tempo da ultima gravidade
+	li t1,300
+	bltu t0,t1,LOOP
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MOVE_V			#desce o player por 1 posicao
 	
-	#la a0,MATRIZ
-	#li a1,3
-	#li a2,3
-	#jal M_SHOW
+	csrr s11,3073		#salva o tempo da ultima gravidade
+	
+	la a0,MATRIZ
+	la a1,M_SIZE
+	jal M_SHOW
+	
+	la a0,n
+	li a7,4
+	ecall
+	
+	j LOOP
+	
+
 
 END:
 	li a7,10
@@ -48,40 +80,43 @@ END:
 # q = 0x71
 # s = 0x73
 # w = 0x77
-#
+#return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
 GET_KEY:
 	addi sp,sp,-4
 	sw ra,0(sp)
 	
 	
-	li a7,12
-	ecall
+	li t0,0xFF200000	#endereco do controle do teclado
+	lw t1,0(t0)
+	andi t1,t1,0x01
+	li a0,1
+	beqz t1,GET_KEY_END
+	lw t1,4(t0)
 
 	li t0,0x61
-	beq a0,t0,a
+	beq t1,t0,a
 	
 	li t0,0x64
-	beq a0,t0,d
+	beq t1,t0,d
 	
 	li t0,0x65
-	beq a0,t0,e
+	beq t1,t0,e
 
 	li t0,0x70
-	beq a0,t0,p
+	beq t1,t0,p
 	
 	li t0,0x71
-	beq a0,t0,q
+	beq t1,t0,q
 
 	li t0,0x73
-	beq a0,t0,s
+	beq t1,t0,s
 	
 	li t0,0x77
-	beq a0,t0,w
+	beq t1,t0,w
 
 	j GET_KEY_END
 
 a:
-
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
