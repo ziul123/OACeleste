@@ -5,14 +5,14 @@ LINHA1:		.word 0,0,0,0,2,0,0,0
 LINHA2:		.word 0,0,0,2,2,2,0,0
 LINHA3:		.word 0,0,0,2,0,0,0,2
 LINHA4:		.word 0,0,0,0,0,0,2,2
-LINHA5:		.word 2,2,2,2,2,2,2,2
+LINHA5:		.word 2,0,2,2,2,2,2,2
 MATRIZ:		.word LINHA0,LINHA1,LINHA2,LINHA3,LINHA4,LINHA5
 PLAYER_POS:	.byte 0,0		#coluna,linha
-			.word LINHA0	#endereco
 M_SIZE:		.word 6,8		#n_linhas, n_colunas
 
 esp:		.string " "
 n:			.string "\n"
+morreu:		.string "morreu\n"
 
 .text
 
@@ -47,7 +47,7 @@ LOOP:
 NO_KEY:	
 	beqz s10,N_GRAV
 	csrr t0,3073
-	sub t0,t0,s11		#s11 tem o tempo da ultima gravidade
+	sub t0,t0,s11			#s11 tem o tempo da ultima gravidade
 	li t1,300
 	bltu t0,t1,LOOP
 
@@ -58,31 +58,41 @@ NO_KEY:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_V			#desce o player por 1 posicao
+	jal MV_V				#desce o player por 1 posicao
 	
-	csrr s11,3073		#salva o tempo da ultima gravidade
+	csrr s11,3073			#salva o tempo da ultima gravidade
 	
 	la a0,PLAYER_POS
 	la a1,MATRIZ
-	jal FLUTUANDO
+	la a2,M_SIZE
+	jal FLUTUANDO			#checa se o player ainda esta flutuando
 	mv s10,a0
-
+	addi sp,sp,-4
+	sw a1,0(sp)
+	
 
 	la a0,MATRIZ
 	la a1,M_SIZE
 	jal M_SHOW
 	
+	
 	la a0,n
 	li a7,4
 	ecall
 	
-	
+	lw t0,0(sp)
+	addi sp,sp,4
+	bgtz t0,MORREU
 	
 	
 N_GRAV:
 	j LOOP
 	
 
+MORREU:
+	la a0,morreu
+	li a7,4
+	ecall
 
 END:
 	li a7,10
@@ -96,12 +106,12 @@ GET_KEY:
 	sw ra,0(sp)
 	
 	
-	li t0,0xFF200000	#endereco do controle do teclado
+	li t0,0xFF200000		#endereco do controle do teclado
 	lw t1,0(t0)
 	andi t1,t1,0x01
 	li a0,1
-	beqz t1,GET_KEY_END	#se nao foi pressionada tecla, pula
-	lw t1,4(t0)			#t1 = tecla pressionada pelo usuario
+	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
+	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
 
 	li t0,'a'
 	beq t1,t0,a
@@ -127,6 +137,9 @@ GET_KEY:
 	li t0,'A'
 	beq t1,t0,A
 	
+	li t0,'C'
+	beq t1,t0,C
+	
 	li t0,'D'
 	beq t1,t0,D
 	
@@ -138,6 +151,9 @@ GET_KEY:
 	
 	li t0,'W'
 	beq t1,t0,W
+	
+	li t0,'Z'
+	beq t1,t0,Z
 
 	j GET_KEY_END
 
@@ -149,11 +165,12 @@ a:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_H				#move o jogador um espaco para esquerda
+	jal MV_H				#move o jogador um espaco para esquerda
 
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	la a0,PLAYER_POS
 	la a1,MATRIZ
+	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
 
@@ -172,12 +189,13 @@ d:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_H				#move o jogador um espaco para direita
+	jal MV_H				#move o jogador um espaco para direita
 
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
 	la a0,PLAYER_POS
 	la a1,MATRIZ
+	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
 
@@ -198,7 +216,7 @@ e:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_DG				#move o player 1 espaco para a diagonal cima direita
+	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
 	
 	li s10,1				#depois de pular, esta flutuando
 	csrr s11,3073
@@ -221,7 +239,7 @@ q:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_DG
+	jal MV_DG_C
 	
 	li s10,1
 	csrr s11,3073
@@ -238,7 +256,7 @@ s:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_V
+	jal MV_V
 
 
 
@@ -255,7 +273,7 @@ w:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MOVE_V
+	jal MV_V
 
 
 	li s10,1
@@ -269,6 +287,24 @@ N_PULA:
 A:
 
 
+C:
+
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B				#move o player 1 espaco para a diagonal cima direita
+	
+	li s10,1				#depois de pular, esta flutuando
+	csrr s11,3073
+	
+	li a0,0
+	j GET_KEY_END
+
+
 D:
 
 
@@ -278,7 +314,31 @@ E:
 Q:
 
 
+S:
+
+
 W:
+
+
+Z:
+
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B
+	
+	li s10,1
+	csrr s11,3073
+
+	li a0,0
+	j GET_KEY_END
+
+
+
 
 
 GET_KEY_END:
@@ -293,17 +353,17 @@ GET_KEY_END:
 #return void
 V_SHOW:
 	mv t0,a0
-	mv t1,a1		#tamanho do vetor
-	li t2,0			#contador
+	mv t1,a1				#tamanho do vetor
+	li t2,0					#contador
 	
 V_SHOW_LOOP:
 	lw a0,0(t0)
-	li a7,1			#ecall para print int
+	li a7,1					#ecall para print int
 	ecall
 	la a0,esp		
-	li a7,4			#ecall para print str
+	li a7,4					#ecall para print str
 	ecall
-	addi t2,t2,1	#t2++
+	addi t2,t2,1			#t2++
 	addi t0,t0,4
 	bltu t2,t1,V_SHOW_LOOP	#while(t2<length(vetor))
 	
@@ -319,10 +379,10 @@ M_SHOW:
 	sw s2,12(sp)
 	sw s3,16(sp)
 	
-	mv s0,a0	#s0 = matriz
-	lw s1,0(a1)	#s1 = linhas
-	lw s2,4(a1)	#s2 = colunas
-	li s3,0		#contador
+	mv s0,a0				#s0 = matriz
+	lw s1,0(a1)				#s1 = linhas
+	lw s2,4(a1)				#s2 = colunas
+	li s3,0					#contador
 	
 M_SHOW_LOOP:
 	slli t0,s3,2
@@ -344,7 +404,9 @@ M_SHOW_LOOP:
 	lw s2,12(sp)
 	lw s3,16(sp)
 	addi sp,sp,20
-	
 	ret
 	
+	
+
+
 .include "movimentacao.s"
