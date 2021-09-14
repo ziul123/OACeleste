@@ -5,7 +5,7 @@ LINHA1:		.word 0,0,0,0,2,0,0,0
 LINHA2:		.word 0,0,0,2,2,2,0,0
 LINHA3:		.word 0,0,0,2,0,0,0,2
 LINHA4:		.word 0,0,0,0,0,0,2,2
-LINHA5:		.word 2,0,2,2,2,2,2,2
+LINHA5:		.word 2,2,2,2,2,2,2,2
 MATRIZ:		.word LINHA0,LINHA1,LINHA2,LINHA3,LINHA4,LINHA5
 PLAYER_POS:	.byte 0,0		#coluna,linha
 M_SIZE:		.word 6,8		#n_linhas, n_colunas
@@ -13,6 +13,7 @@ M_SIZE:		.word 6,8		#n_linhas, n_colunas
 esp:		.string " "
 n:			.string "\n"
 morreu:		.string "morreu\n"
+test:		.string "aqui"
 
 .text
 
@@ -67,6 +68,9 @@ NO_KEY:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se o player ainda esta flutuando
 	mv s10,a0
+	bnez a0,N_RES_DASH
+	li s9,1
+N_RES_DASH:
 	addi sp,sp,-4
 	sw a1,0(sp)
 	
@@ -279,16 +283,39 @@ w:
 	li s10,1
 	csrr s11,3073
 
-JA_FLUTUANDO:
-N_PULA:
+	li a0,0
+	j GET_KEY_END
+	
+A:
+	beqz s9,N_DASH
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para esquerda
+	
+	li s9,0
+
+	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
+	
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	jal FLUTUANDO			#checa se esta flutuando depois de mover
+	mv s10,a0
+
+	csrr s11,3073			#comeca o timer da gravidade
+	
+	
 	li a0,0
 	j GET_KEY_END
 
-A:
-
-
 C:
-
+	beqz s9,N_DASH
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -298,29 +325,133 @@ C:
 
 	jal MV_DG_B				#move o player 1 espaco para a diagonal cima direita
 	
-	li s10,1				#depois de pular, esta flutuando
-	csrr s11,3073
+	li s9,0
+	
+	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
+	
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	jal FLUTUANDO			#checa se esta flutuando depois de mover
+	mv s10,a0
+
+	csrr s11,3073			#comeca o timer da gravidade
+	
 	
 	li a0,0
 	j GET_KEY_END
 
 
 D:
+	beqz s9,N_DASH
 
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para direita
+
+	li s9,0
+
+	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
+	
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	jal FLUTUANDO			#checa se esta flutuando depois de mover
+	mv s10,a0
+
+	csrr s11,3073			#comeca o timer da gravidade
+
+
+
+	li a0,0
+	j GET_KEY_END
 
 E:
+	beqz s9,N_DASH
 
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
+
+	li s9,0
+	li s10,1
+	csrr s11,3073
+
+	li a0,0
+	j GET_KEY_END
 
 Q:
+	beqz s9,N_DASH
 
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_C
+
+
+	li s9,0
+	li s10,1
+	csrr s11,3073
+
+	li a0,0
+	j GET_KEY_END
 
 S:
+	beqz s9,N_DASH
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
 
+	jal MV_V
+
+
+	li s9,0
+	li s10,1
+	csrr s11,3073
+
+	li a0,0
+	j GET_KEY_END
 
 W:
+	beqz s9,N_DASH
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_V
+
+	li s9,0
+	li s10,1
+	csrr s11,3073
+
+	li a0,0
+	j GET_KEY_END
 
 
 Z:
+	beqz s9,N_DASH
 
 	li a0,-1
 	li a1,1
@@ -331,14 +462,26 @@ Z:
 
 	jal MV_DG_B
 	
-	li s10,1
-	csrr s11,3073
+	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	jal FLUTUANDO			#checa se esta flutuando depois de mover
+	mv s10,a0
+
+	csrr s11,3073			#comeca o timer da gravidade
+	
+	li s9,0
 
 	li a0,0
 	j GET_KEY_END
 
 
-
+JA_FLUTUANDO:
+N_PULA:
+N_DASH:
+	li a0,0
+	j GET_KEY_END
 
 
 GET_KEY_END:
@@ -349,64 +492,5 @@ GET_KEY_END:
 
 
 
-#a0= int vetor[], a1= int len(vetor)
-#return void
-V_SHOW:
-	mv t0,a0
-	mv t1,a1				#tamanho do vetor
-	li t2,0					#contador
-	
-V_SHOW_LOOP:
-	lw a0,0(t0)
-	li a7,1					#ecall para print int
-	ecall
-	la a0,esp		
-	li a7,4					#ecall para print str
-	ecall
-	addi t2,t2,1			#t2++
-	addi t0,t0,4
-	bltu t2,t1,V_SHOW_LOOP	#while(t2<length(vetor))
-	
-	ret
-
-#a0= int matriz[][], a1= (n_linhas, n_colunas)
-#return void
-M_SHOW:
-	addi sp,sp,-20
-	sw ra,0(sp)
-	sw s0,4(sp)
-	sw s1,8(sp)
-	sw s2,12(sp)
-	sw s3,16(sp)
-	
-	mv s0,a0				#s0 = matriz
-	lw s1,0(a1)				#s1 = linhas
-	lw s2,4(a1)				#s2 = colunas
-	li s3,0					#contador
-	
-M_SHOW_LOOP:
-	slli t0,s3,2
-	add t0,t0,s0
-	lw a0,0(t0)
-	mv a1,s2
-	jal V_SHOW
-	
-	la a0,n
-	li a7,4
-	ecall
-	
-	addi s3,s3,1
-	blt s3,s1,M_SHOW_LOOP
-	
-	lw ra,0(sp)
-	lw s0,4(sp)
-	lw s1,8(sp)
-	lw s2,12(sp)
-	lw s3,16(sp)
-	addi sp,sp,20
-	ret
-	
-	
-
-
 .include "movimentacao.s"
+.include "show.s"
