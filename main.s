@@ -1,5 +1,7 @@
 .data
 
+#15 linhas, 20 colunas
+
 LINHA0:		.word 1,0,0,0,0,0,0,0
 LINHA1:		.word 0,0,0,0,2,0,0,0
 LINHA2:		.word 0,0,0,2,2,2,0,0
@@ -262,7 +264,7 @@ s:
 
 	jal MV_V
 
-
+#tem que tirar
 
 	li a0,0
 	j GET_KEY_END
