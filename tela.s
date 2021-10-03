@@ -3,6 +3,9 @@
 PLAYER_POS:	.byte 1,12
 
 .include "sprites_walk/walk00.data"
+.include "sprites_walk/walk01.data"
+.include "sprites_walk/walk03.data"
+.include "sprites_walk/walk04.data"
 .include "sprites_walk/mapa_com_matriz.data"
 
 
@@ -74,6 +77,62 @@ d:
 	slli a3,a3,4
 	jal APAGAR
 	
+	
+	la a0,walk01.bmp
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk01.bmp
+	mv a3,a2
+	mv a2,a1
+	la a1,mapa_com_matriz.bmp
+	jal APAGAR
+	
+		
+	la a0,walk03.bmp
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk03.bmp
+	mv a3,a2
+	mv a2,a1
+	la a1,mapa_com_matriz.bmp
+	jal APAGAR
+	
+		
+	la a0,walk04.bmp
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	la a0,walk04.bmp
+	mv a3,a2
+	mv a2,a1
+	la a1,mapa_com_matriz.bmp
+	jal APAGAR
+	
+	
 	la t0,PLAYER_POS
 	lb t1,0(t0)
 	addi t1,t1,1
@@ -107,8 +166,10 @@ GET_KEY_END:
 #a1= x	
 #a2= y
 D_SETUP:
-	addi sp,sp,-4
+	addi sp,sp,-12
 	sw ra,0(sp)
+	sw a1,4(sp)
+	sw a2,8(sp)
 
 	lw t0,0(a0)				#t0 = largura
 	lw t1,4(a0)				#t1 = altura
@@ -130,7 +191,9 @@ D_SETUP:
 
 D_SETUP_END:
 	lw ra,0(sp)
-	addi sp,sp,4
+	lw a1,4(sp)
+	lw a2,8(sp)
+	addi sp,sp,12
 	ret
 
 
@@ -139,8 +202,10 @@ D_SETUP_END:
 #a2= x
 #a3= y
 APAGAR:
-	addi sp,sp,-4
+	addi sp,sp,-12
 	sw ra,0(sp)
+	sw a2,4(sp)
+	sw a3,8(sp)
 
 	lw t0,0(a0)				#t0 = largura
 	lw t1,4(a0)				#t1 = altura
@@ -188,15 +253,11 @@ A_LOOP:
 
 
 
-
-
-
-
-
-
 APAGAR_END:
 	lw ra,0(sp)
-	addi sp,sp,4
+	lw a2,4(sp)
+	lw a3,8(sp)
+	addi sp,sp,12
 	ret
 	
 
