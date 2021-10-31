@@ -1,6 +1,0 @@
--fazer pulo da parede
--juntar sprites de um movimento em um arquivo só
--refatorar a função de desenho para desenhar todo
- o movimento com uma chamada só
--adicionar lógica para diferenciar o movimento
- horizontal no chão e no ar para desenhar sprites diferentes
