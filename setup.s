@@ -39,7 +39,17 @@ LEVEL5:		.space 1200
 
 LEVELS:		.word LEVEL1,LEVEL2,LEVEL3,LEVEL4,LEVEL5
 
+
+.include "niveis/nivel1.data"
+.include "niveis/nivel2.data"
+.include "niveis/nivel3.data"
+.include "niveis/nivel4.data"
+.include "niveis/nivel5.data"
+
 .text
+
+
+
 
 
 #copia a matriz do nivel especificado para a matriz do jogo
@@ -89,3 +99,80 @@ COPIA_END:
 	ret
 
 
+#desenha o nivel
+#a0= nivel
+DESENHO_DO_NIVEL:
+	addi sp,sp,-4
+	sw ra,0(sp)
+
+	li t0,1
+	beq a0,t0,L1
+	
+	li t0,2
+	beq a0,t0,L2
+	
+	li t0,3
+	beq a0,t0,L3
+	
+	li t0,4
+	beq a0,t0,L4
+	
+	li t0,5
+	beq a0,t0,L5
+	
+L1:
+	
+	la a0,nivel1
+	j DESENHO_DO_NIVEL_END
+
+L2:
+
+	la a0,nivel2
+	j DESENHO_DO_NIVEL_END
+	
+L3:
+	
+	la a0,nivel3
+	j DESENHO_DO_NIVEL_END
+	
+L4:
+	
+	la a0,nivel4
+	j DESENHO_DO_NIVEL_END
+	
+L5:
+	
+	la a0,nivel5
+	
+DESENHO_DO_NIVEL_END:
+	mv a1,zero
+	mv a2,zero
+	jal D_SETUP
+	
+	lw ra,0(sp)
+	addi sp,sp,4
+	ret
+	
+	
+#setup do nivel
+#a0= nivel
+#return a0= matriz do jogo
+SETUP:
+	addi sp,sp,-8
+	sw ra,0(sp)
+	sw s0,4(sp)
+
+	mv s0,a0
+
+	jal DESENHO_DO_NIVEL
+	
+	mv a0,s0
+	jal COPIA
+
+SETUP_END:
+	lw ra,0(sp)
+	lw s0,4(sp)
+	addi sp,sp,8
+	ret
+	
+.include "tela.s"
