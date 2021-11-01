@@ -5,7 +5,7 @@ PLAYER_POS:	.byte 1,12
 .include "sprites_walk/walk00.data"
 .include "sprites_walk/walk01.data"
 .include "sprites_walk/walk03.data"
-.include "sprites_walk/walk04.data"
+.include "sprites_walk/walk02.data"
 .include "sprites_walk/mapa_com_matriz.data"
 
 
@@ -97,7 +97,7 @@ d:
 	jal APAGAR
 	
 		
-	la a0,walk03.bmp
+	la a0,walk02.bmp
 	addi a1,a2,4
 	mv a2,a3
 	jal D_SETUP
@@ -109,14 +109,14 @@ d:
 	ecall
 	
 	
-	la a0,walk03.bmp
+	la a0,walk02.bmp
 	mv a3,a2
 	mv a2,a1
 	la a1,mapa_com_matriz.bmp
 	jal APAGAR
 	
 		
-	la a0,walk04.bmp
+	la a0,walk03.bmp
 	addi a1,a2,4
 	mv a2,a3
 	jal D_SETUP
@@ -126,7 +126,7 @@ d:
 	li a7,32
 	ecall
 	
-	la a0,walk04.bmp
+	la a0,walk03.bmp
 	mv a3,a2
 	mv a2,a1
 	la a1,mapa_com_matriz.bmp

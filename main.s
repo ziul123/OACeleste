@@ -2,15 +2,9 @@
 
 #15 linhas, 20 colunas
 
-LINHA0:		.word 1,0,0,0,0,0,0,0
-LINHA1:		.word 0,0,0,0,2,0,0,0
-LINHA2:		.word 0,0,0,2,2,2,0,0
-LINHA3:		.word 0,0,0,2,0,0,0,2
-LINHA4:		.word 0,0,0,0,0,0,2,2
-LINHA5:		.word 2,2,2,2,2,2,2,2
-MATRIZ:		.word LINHA0,LINHA1,LINHA2,LINHA3,LINHA4,LINHA5
-PLAYER_POS:	.byte 0,0		#coluna,linha
-M_SIZE:		.word 6,8		#n_linhas, n_colunas
+
+PLAYER_POS:	.byte 1,5		#coluna,linha
+M_SIZE:		.word 15,20		#n_linhas, n_colunas
 
 esp:		.string " "
 n:			.string "\n"
@@ -20,7 +14,9 @@ test:		.string "aqui"
 .text
 
 MAIN:
-	la a0,MATRIZ
+	li a0,1
+	jal SETUP
+	
 	la a1,M_SIZE
 	jal M_SHOW
 	
@@ -28,6 +24,7 @@ MAIN:
 	li a7,4
 	ecall
 
+#s8 = lado que o jogador esta virado (0 par esquerda, 1 para direita)
 #s9 = dash (0 nao pode, 1 pode)
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade
@@ -60,6 +57,7 @@ NO_KEY:
 	la a3,MATRIZ
 	la a4,M_SIZE
 	li a5,0
+	li a6,0
 
 	jal MV_V				#desce o player por 1 posicao
 	
@@ -70,8 +68,9 @@ NO_KEY:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se o player ainda esta flutuando
 	mv s10,a0
-	bnez a0,N_RES_DASH
+	bnez s10,N_RES_DASH
 	li s9,1
+	
 N_RES_DASH:
 	addi sp,sp,-4
 	sw a1,0(sp)
@@ -116,8 +115,8 @@ GET_KEY:
 	lw t1,0(t0)
 	andi t1,t1,0x01
 	li a0,1
-	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
-	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
+	beqz t1,GET_KEY_NO_KEY		#se nao foi pressionada tecla, pula
+	lw t1,4(t0)					#t1 = tecla pressionada pelo usuario
 
 	li t0,'a'
 	beq t1,t0,a
@@ -161,7 +160,7 @@ GET_KEY:
 	li t0,'Z'
 	beq t1,t0,Z
 
-	j GET_KEY_END
+	j GET_KEY_NO_KEY
 
 a:
 	li a0,-1
@@ -179,10 +178,10 @@ a:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
-
+	
 	csrr s11,3073			#comeca o timer da gravidade
 	
-
+	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
@@ -204,17 +203,23 @@ d:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
-
+	
 	csrr s11,3073			#comeca o timer da gravidade
 
-
+	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
 
 e:
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	
+	jal PAREDE_LADO			#checa se o jogador esta do lado de uma parede
+	beqz a0,e_PULO_PAREDE
 	bnez s10,N_PULA			#se esta flutuando, nao pula
-
+e_PULO_PAREDE:
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -227,17 +232,24 @@ e:
 	li s10,1				#depois de pular, esta flutuando
 	csrr s11,3073
 	
+	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
 p:
 	li a0,-1
-	j GET_KEY_END
+	j GET_KEY_NO_KEY
 
 
 q:
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
+	
+	jal PAREDE_LADO			#checa se o jogador esta do lado de uma parede
+	beqz a0,q_PULO_PAREDE
 	bnez s10,N_PULA
-
+q_PULO_PAREDE:
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -249,7 +261,8 @@ q:
 	
 	li s10,1
 	csrr s11,3073
-
+	
+	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
@@ -261,6 +274,7 @@ s:
 	la a3,MATRIZ
 	la a4,M_SIZE
 	li a5,0
+	li a6,0
 
 	jal MV_V
 
@@ -270,14 +284,21 @@ s:
 	j GET_KEY_END
 
 w:
-	bnez s10,N_PULA
+	la a0,PLAYER_POS
+	la a1,MATRIZ
+	la a2,M_SIZE
 	
+	jal PAREDE_LADO			#checa se o jogador esta do lado de uma parede
+	beqz a0,w_PULO_PAREDE
+	bnez s10,N_PULA
+w_PULO_PAREDE:
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
 	la a3,MATRIZ
 	la a4,M_SIZE
 	li a5,0
+	li a6,0
 
 	jal MV_V
 
@@ -300,6 +321,15 @@ A:
 
 	jal MV_H				#move o jogador um espaco para esquerda
 	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para esquerda
+	
 	li s9,0
 
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
@@ -312,12 +342,13 @@ A:
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	
+	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
 C:
 	beqz s9,N_DASH
+	
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -325,7 +356,17 @@ C:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MV_DG_B				#move o player 1 espaco para a diagonal cima direita
+	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
+	
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
 	
 	li s9,0
 	
@@ -339,7 +380,7 @@ C:
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	
+	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
@@ -347,6 +388,15 @@ C:
 D:
 	beqz s9,N_DASH
 
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para direita
+	
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -369,7 +419,7 @@ D:
 	csrr s11,3073			#comeca o timer da gravidade
 
 
-
+	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
@@ -384,11 +434,21 @@ E:
 	li a5,0
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
 
 	li s9,0
 	li s10,1
 	csrr s11,3073
 
+	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
@@ -402,13 +462,23 @@ Q:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MV_DG_C
+	jal MV_DG_C				#move o player 1 espaco para a diagonal cima esquerda
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_C				#move o player 1 espaco para a diagonal cima esquerda
 
 
 	li s9,0
 	li s10,1
 	csrr s11,3073
-
+	
+	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
@@ -421,8 +491,19 @@ S:
 	la a3,MATRIZ
 	la a4,M_SIZE
 	li a5,0
+	li a6,0
 
-	jal MV_V
+	jal MV_V				#move o jogador 1 espaco para baixo
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+	li a6,0
+
+	jal MV_V				#move o jogador 1 espaco para baixo
 
 
 	li s9,0
@@ -441,8 +522,19 @@ W:
 	la a3,MATRIZ
 	la a4,M_SIZE
 	li a5,0
+	li a6,0
 
-	jal MV_V
+	jal MV_V				#move o jogador 1 espaco para cima
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+	li a6,0
+
+	jal MV_V				#move o jogador 1 espaco para cima
 
 	li s9,0
 	li s10,1
@@ -462,7 +554,16 @@ Z:
 	la a4,M_SIZE
 	li a5,0
 
-	jal MV_DG_B
+	jal MV_DG_B				#move o jogador 1 espaco para a diagonal baixo esquerda
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B				#move o jogador 1 espaco para a diagonal baixo esquerda
 	
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	la a0,PLAYER_POS
@@ -475,6 +576,7 @@ Z:
 	
 	li s9,0
 
+	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
@@ -487,6 +589,9 @@ N_DASH:
 
 
 GET_KEY_END:
+
+
+GET_KEY_NO_KEY:	
 	lw ra,0(sp)
 	addi sp,sp,4
 	ret
@@ -496,3 +601,4 @@ GET_KEY_END:
 
 .include "movimentacao.s"
 .include "show.s"
+.include "setup.s"

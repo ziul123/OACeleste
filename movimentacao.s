@@ -27,12 +27,37 @@ MV_H:
 	li t5,2
 	bnez a5,IGNORA_H
 	beq t4,t5,MV_H_END	#se o objeto no destino for parede, n move
+	li t5,3
+	beq t4,t5,MV_H_MOLA	#se o objeto no destino for mola, chama a funcao de mola
+	li t5,4
+	beq t4,t5,MV_H_MORANGO
+	
 IGNORA_H:
 	slli t4,t0,2
 	add t4,t4,t3			#t4 = endereco original
 	sw zero,0(t4)			#coloca 0 no endereco original
 	sw a1,0(t2)				#coloca o objeto no novo endereco
 	sb t1,0(a2)				#muda a posicao do objeto
+	j MV_H_END
+
+MV_H_MORANGO:
+	slli t4,t0,2
+	add t4,t4,t3			#t4 = endereco original
+	sw zero,0(t4)			#coloca 0 no endereco original
+	sw a1,0(t2)				#coloca o objeto no novo endereco
+	sb t1,0(a2)				#muda a posicao do objeto
+	
+	jal MORANGO
+	j MV_H_END
+
+MV_H_MOLA:
+	slli t4,t0,2
+	add t4,t4,t3			#t4 = endereco original
+	sw zero,0(t4)			#coloca 0 no endereco original
+	sb t1,0(a2)				#muda a posicao do objeto
+	
+	jal MOLA
+	li a0,0
 
 MV_H_END:
 	lw ra,0(sp)
@@ -52,6 +77,7 @@ MV_H_END:
 #a3= matriz do jogo
 #a4= tamanho da matriz do jogo (n_linhas, n_colunas)
 #a5= ignora obstaculos (0 para n ignorar, 1 para ignorar)
+#a6= overwrite (0 para overwrite, 1 para n overwrite)
 #return a0= moveu (0 se moveu, -1 se n moveu)
 MV_V:
 	addi sp,sp,-8
@@ -79,12 +105,41 @@ MV_V:
 	li t0,2
 	bnez a5,IGNORA_V
 	beq t6,t0,MV_V_END	#se o objeto no destino for parede, n move
+	li t0,3
+	beq t6,t0,MV_V_MOLA	#se o objeto no destino for mola, chama a funcao de mola
+	li t0,4
+	beq t6,t0,MV_V_MORANGO
+	li t0,5
+	beq t6,t0,MORREU
+	
 IGNORA_V:
+	bnez a6,N_OVERWRITE
+	add t6,t2,t3			#t6 = endereco original
+	sw zero,0(t6)			#coloca 0 no endereco original
+	
+N_OVERWRITE:
 	li a0,0
+	sw a1,0(t5)				#coloca o objeto no novo endereco
+	sb t1,1(a2)				#muda a posicao do objeto
+	j MV_V_END
+
+MV_V_MORANGO:
 	add t6,t2,t3			#t6 = endereco original
 	sw zero,0(t6)			#coloca 0 no endereco original
 	sw a1,0(t5)				#coloca o objeto no novo endereco
 	sb t1,1(a2)				#muda a posicao do objeto
+	
+	jal MORANGO
+	li a0,0
+	j MV_V_END
+
+MV_V_MOLA:
+	add t6,t2,t3			#t6 = endereco original
+	sw zero,0(t6)			#coloca 0 no endereco original
+	sb t1,1(a2)				#muda a posicao do objeto
+	
+	jal MOLA
+	li a0,0
 
 MV_V_END:
 	lw ra,0(sp)
@@ -138,6 +193,10 @@ MV_DG_C_NUM_NEG:
 	li t5,2
 	bnez a5,IGNORA_DG_C
 	beq t4,t5,MV_DG_C_END	#se o objeto no destino for parede, n move
+	li t5,3
+	beq t4,t5,MV_DG_C_MOLA
+	li t5,4
+	beq t4,t5,MV_DG_C_MORANGO
 	
 IGNORA_DG_C:
 	slli t1,t1,2
@@ -149,6 +208,34 @@ IGNORA_DG_C:
 	sw a1,0(t3)				#coloca o objeto no novo endereco
 	sb s1,0(a2)				#muda a coluna do objeto
 	sb s0,1(a2)				#muda a linha do objeto
+	j MV_DG_C_END
+	
+MV_DG_C_MORANGO:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sw a1,0(t3)				#coloca o objeto no novo endereco
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
+	
+	jal MORANGO
+	j MV_DG_C_END
+	
+MV_DG_C_MOLA:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
+	
+	jal MOLA
+	li a0,0
 
 MV_DG_C_END:
 	lw ra,0(sp)
@@ -201,6 +288,12 @@ MV_DG_B_NUM_POS:
 	li t5,2
 	bnez a5,IGNORA_DG_B
 	beq t4,t5,MV_DG_B_END	#se o objeto no destino for parede, n move
+	li t5,3
+	beq t4,t5,MV_DG_B_MOLA
+	li t5,4
+	beq t4,t5,MV_DG_B_MORANGO
+	li t5,5
+	beq t4,t5,MORREU
 	
 IGNORA_DG_B:
 	slli t1,t1,2
@@ -213,7 +306,32 @@ IGNORA_DG_B:
 	sb s1,0(a2)				#muda a coluna do objeto
 	sb s0,1(a2)				#muda a linha do objeto
 	
+MV_DG_B_MORANGO:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sw a1,0(t3)				#coloca o objeto no novo endereco
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
 	
+	jal MORANGO
+	j MV_DG_C_END
+	
+MV_DG_B_MOLA:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
+	
+	jal MOLA
+	li a0,0
 
 MV_DG_B_END:
 	lw ra,0(sp)
@@ -290,4 +408,38 @@ FLUTUANDO_END:
 	ret
 	
 	
+#checa se o jogador esta do lado de uma parede
+#a0= posicao do jogador
+#a1= matriz
+#a2= tamanho da matriz	(n_linhas, n_colunas)
+#return a0= esta do lado de uma parede (0 para sim, 1 para nao)
+PAREDE_LADO:
+	addi sp,sp,-8
+	sw ra,0(sp)
+	sw s0,4(sp)
+
+	mv a3,a2
+	mv a2,a1
+	lb a1,1(a0)
+	lb a0,0(a0)
+	
+	jal GET_ELEMENT
+	
+	lw t0,-4(a0)			#t0 = o que esta a esquerda do jogador
+	lw t1,4(a0)				#t1 = o que esta a direita do jogador
+	li a0,0
+	li t2,2
+	beq t0,t2,PAREDE_LADO_END
+	beq t1,t2,PAREDE_LADO_END
+	li a0,1
+	
+
+PAREDE_LADO_END:
+	lw ra,0(sp)
+	lw s0,4(sp)
+	addi sp,sp,8
+	ret
+
+	
+.include "extras.s"
 	
