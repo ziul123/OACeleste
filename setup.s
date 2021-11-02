@@ -240,6 +240,12 @@ L5:
 	sb t2,0(t1)
 	li t2,12
 	sb t2,1(t1)
+	
+	la t1,INIMIGO_POS
+	li t2,1
+	sb t2,0(t1)
+	li t2,12
+	sb t2,1(t1)
 	#la a0,nivel5
 	
 DESENHO_DO_NIVEL_END:

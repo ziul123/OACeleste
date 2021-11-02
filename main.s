@@ -14,7 +14,7 @@ test:		.string "aqui"
 .text
 
 MAIN:
-	li a0,5
+	li a0,4
 	jal SETUP
 	
 	la a1,M_SIZE
@@ -30,7 +30,7 @@ MAIN:
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade
 LOOP:
-	jal INIMIGO_CTRL
+	#jal INIMIGO_CTRL
 
 	jal GET_KEY
 	

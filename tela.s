@@ -1,24 +1,26 @@
 .data
 
-PLAYER_POS:	.byte 1,12
+PLAYER_POS:	.byte 1,5
 
-.include "sprites_walk/walk00.data"
-.include "sprites_walk/walk01.data"
-.include "sprites_walk/walk03.data"
-.include "sprites_walk/walk02.data"
-.include "sprites_walk/mapa_com_matriz.data"
+.include "mapas/mapa1.data"
+
+.include "sprites/walk_r.data"
+.include "sprites/walk_l.data"
+.include "sprites/dash_r.data"
+.include "sprites/dash_l.data"
+.include "sprites/jump_r.data"
 
 
 .text
 	
-	la a0,mapa_com_matriz.bmp
+	la a0,mapa1
 	mv a1,zero
 	mv a2,zero
 	jal D_SETUP
 	
-	la a0,walk00.bmp
+	la a0,walk_r
 	li a1,1
-	li a2,12
+	li a2,5
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
 	slli a2,a2,4	
 	jal D_SETUP
@@ -54,7 +56,8 @@ GET_KEY:
 	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
 	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
 	
-	
+	li t0,'a'
+	beq t1,t0,a
 	
 	li t0,'d'
 	beq t1,t0,d
@@ -62,97 +65,47 @@ GET_KEY:
 	li t0,'p'
 	beq t1,t0,p
 	
+	li t0,'D'
+	beq t1,t0,D
+	
+	j GET_KEY_END
+	
+	
+a:
+
+	li a0,2
+	la a1,mapa1
+	jal ANIMACAO
+	
+	li a0,0
+	
 	j GET_KEY_END
 	
 d:
 
-	la t0,PLAYER_POS
-	lb t1,0(t0)
+	li a0,1
+	la a1,mapa1
+	jal ANIMACAO
 	
-	la a0,walk00.bmp
-	la a1,mapa_com_matriz.bmp
-	mv a2,t1
-	lb a3,1(t0)
-	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
-	slli a3,a3,4
-	jal APAGAR
-	
-	
-	la a0,walk01.bmp
-	addi a1,a2,4
-	mv a2,a3
-	jal D_SETUP
-
-	
-	
-	li a0,150
-	li a7,32
-	ecall
-	
-	
-	la a0,walk01.bmp
-	mv a3,a2
-	mv a2,a1
-	la a1,mapa_com_matriz.bmp
-	jal APAGAR
-	
-		
-	la a0,walk02.bmp
-	addi a1,a2,4
-	mv a2,a3
-	jal D_SETUP
-	
-	
-	
-	li a0,150
-	li a7,32
-	ecall
-	
-	
-	la a0,walk02.bmp
-	mv a3,a2
-	mv a2,a1
-	la a1,mapa_com_matriz.bmp
-	jal APAGAR
-	
-		
-	la a0,walk03.bmp
-	addi a1,a2,4
-	mv a2,a3
-	jal D_SETUP
-
-	
-	li a0,150
-	li a7,32
-	ecall
-	
-	la a0,walk03.bmp
-	mv a3,a2
-	mv a2,a1
-	la a1,mapa_com_matriz.bmp
-	jal APAGAR
-	
-	
-	la t0,PLAYER_POS
-	lb t1,0(t0)
-	addi t1,t1,1
-	sb t1,0(t0)
-	
-	
-	la a0,walk00.bmp
-	mv a1,t1
-	lb a2,1(t0)
-	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
-	slli a2,a2,4
-	jal D_SETUP
-	
-	mv a0,zero
+	li a0,0
 	
 	j GET_KEY_END
 	
 p:
 	li a0,-1
 	
+	j GET_KEY_END
+	
+D:
+	li a0,3
+	la a1,mapa1
+	jal ANIMACAO
+	
+	li a0,3
+	la a1,mapa1
+	jal ANIMACAO
+	
+	li a0,0
 	
 GET_KEY_END:
 	lw ra,0(sp)
@@ -284,7 +237,7 @@ D_LOOP:
 	blt t4,a2,D_LOOP		#se n terminou de desenhar a linha, continua
 	
 	mv t4,zero				#zera o contador de colunas
-	sub a1,a1,t0
+	sub a1,a1,a2
 	addi a1,a1,320			#volta a tela para a coluna inicial mas na proxima linha
 	addi t3,t3,1			#contador de linhas++
 
@@ -297,6 +250,368 @@ DESENHAR_END:
 
 
 
+#0 -cair
+#1 -andar para direita
+#2 -andar para esquerda
+#3 -andar para direita com dash
+#4 -andar para esquerda com dash
+#5 -pular diagonal direita
+#6 -pular diagonal esquerda
+#7 -pular diagonal direita com dash
+#8 -pular diagonal esquerda com dash
+#9 -pular baixo diagonal direita com dash
+#10 -pular baixo diagonal esquerda com dash
+#11 -pulo reto
+#12 -pulo reto com dash
+#13 -cair reto com dash
+
+#executa a animacao do movimento especificado
+#a0= movimento a ser animado
+#a1= endereco do fundo
+ANIMACAO:
+	addi sp,sp,-8
+	sw ra,0(sp)
+	sw s0,4(sp)
+
+	mv s0,a1
+
+	li t0,0
+	beq a0,t0,ANIMACAO_0
 	
+	li t0,1
+	beq a0,t0,ANIMACAO_1
+	
+	li t0,2
+	beq a0,t0,ANIMACAO_2
+	
+	li t0,3
+	beq a0,t0,ANIMACAO_3
+	
+	li t0,4
+	beq a0,t0,ANIMACAO_4
+	
+	li t0,5
+	beq a0,t0,ANIMACAO_5
+	
+	li t0,6
+	beq a0,t0,ANIMACAO_6
+	
+	li t0,7
+	beq a0,t0,ANIMACAO_7
+	
+	li t0,8
+	beq a0,t0,ANIMACAO_8
+	
+	li t0,9
+	beq a0,t0,ANIMACAO_9
+	
+	li t0,10
+	beq a0,t0,ANIMACAO_10
+	
+	li t0,11
+	beq a0,t0,ANIMACAO_11
+	
+	li t0,12
+	beq a0,t0,ANIMACAO_12
+	
+	li t0,13
+	beq a0,t0,ANIMACAO_13
+	
+ANIMACAO_0:
+
+	j ANIMACAO_END
+
+ANIMACAO_1:
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	
+	la a0,walk_r
+	mv a1,s0
+	mv a2,t1
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	la a0,walk01_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk01_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,walk02_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk02_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,walk03_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk03_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	addi t1,t1,1
+	sb t1,0(t0)
+	
+	
+	la a0,walk_r
+	mv a1,t1
+	lb a2,1(t0)
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP
+	
+	j ANIMACAO_END
+
+ANIMACAO_2:
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	
+	la a0,walk_l
+	mv a1,s0
+	mv a2,t1
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	la a0,walk01_l
+	addi a1,a2,-4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk01_l
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,walk02_l
+	addi a1,a2,-4
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk02_l
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,walk03_l
+	addi a1,a2,-4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	
+	la a0,walk03_l
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	addi t1,t1,-1
+	sb t1,0(t0)
+	
+	
+	la a0,walk_l
+	mv a1,t1
+	lb a2,1(t0)
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP
+
+	j ANIMACAO_END
+
+ANIMACAO_3:
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	
+	la a0,dash_r
+	mv a1,s0
+	mv a2,t1
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	la a0,dash01_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,30
+	li a7,32
+	ecall
+	
+	
+	la a0,dash01_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,dash02_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	
+	li a0,30
+	li a7,32
+	ecall
+	
+	
+	la a0,dash02_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la a0,dash03_r
+	addi a1,a2,4
+	mv a2,a3
+	jal D_SETUP
+
+	
+	
+	li a0,30
+	li a7,32
+	ecall
+	
+	
+	la a0,dash03_r
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	addi t1,t1,1
+	sb t1,0(t0)
+	
+	
+	la a0,dash_r
+	mv a1,t1
+	lb a2,1(t0)
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP
+	
+	
+	j ANIMACAO_END
+
+ANIMACAO_4:
+
+	j ANIMACAO_END
+
+ANIMACAO_5:
+
+	j ANIMACAO_END
+
+ANIMACAO_6:
+
+	j ANIMACAO_END
+
+ANIMACAO_7:
+
+	j ANIMACAO_END
+
+ANIMACAO_8:
+
+	j ANIMACAO_END
+
+ANIMACAO_9:
+
+	j ANIMACAO_END
+
+ANIMACAO_10:
+
+	j ANIMACAO_END
+
+ANIMACAO_11:
+
+	j ANIMACAO_END
+
+ANIMACAO_12:
+
+	j ANIMACAO_END
+
+ANIMACAO_13:
+
+	
+
+ANIMACAO_END:
+	lw ra,0(sp)
+	lw s0,4(sp)
+	addi sp,sp,8
+	ret
 
 	
