@@ -25,7 +25,7 @@ MAIN:
 	ecall
 
 #s7 = timer do inimigo
-#s8 = lado que o jogador esta virado (0 par esquerda, 1 para direita)
+#s8 = lado que o jogador esta virado (0 para esquerda, 1 para direita)
 #s9 = dash (0 nao pode, 1 pode)
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade

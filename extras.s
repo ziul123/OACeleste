@@ -68,3 +68,23 @@ MORANGO_END:
 	lw ra,0(sp)
 	addi sp,sp,4
 	ret
+	
+	
+	
+
+#funcao de coletar chave
+#
+CHAVE:
+	addi sp,sp,-4
+	sw ra,0(sp)
+#linha 10, coluna 18
+
+	la t0,LINHA10
+	sw zero,72(t0)				#escreve 0 no lugar da porta
+	
+	#apagar porta
+
+CHAVE_END:
+	lw ra,0(sp)
+	addi sp,sp,4
+	ret

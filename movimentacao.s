@@ -24,6 +24,9 @@ MV_H:
 	slli t2,t1,2
 	add t2,t2,t3			#t2 = endereco destino
 	lw t4,0(t2)				#t4 = objeto no endereco destino
+	
+	li a0,-1
+	
 	li t5,2
 	bnez a5,IGNORA_H
 	beq t4,t5,MV_H_END	#se o objeto no destino for parede, n move
@@ -37,8 +40,22 @@ MV_H:
 	beq t4,t5,MORREU	#se o objeto no destino for o jogador, o inimigo alcancou
 	li t5,7
 	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
+	li t5,8
+	beq t4,t5,MV_H_CHAVE
 	j IGNORA_H
 	
+	
+MV_H_CHAVE:
+	slli t4,t0,2
+	add t4,t4,t3			#t4 = endereco original
+	sw zero,0(t4)			#coloca 0 no endereco original
+	sw a1,0(t2)				#coloca o objeto no novo endereco
+	sb t1,0(a2)				#muda a posicao do objeto
+
+	jal CHAVE
+	li a0,0
+	j MV_H_END
+
 MV_H_CRISTAL:
 	li s9,1
 	
@@ -48,6 +65,7 @@ IGNORA_H:
 	sw zero,0(t4)			#coloca 0 no endereco original
 	sw a1,0(t2)				#coloca o objeto no novo endereco
 	sb t1,0(a2)				#muda a posicao do objeto
+	li a0,0
 	j MV_H_END
 
 MV_H_MORANGO:
@@ -58,6 +76,7 @@ MV_H_MORANGO:
 	sb t1,0(a2)				#muda a posicao do objeto
 	
 	jal MORANGO
+	li a0,0
 	j MV_H_END
 
 MV_H_MOLA:
@@ -67,6 +86,7 @@ MV_H_MOLA:
 	sb t1,0(a2)				#muda a posicao do objeto
 	
 	jal MOLA
+	li a0,0
 	li a0,0
 
 MV_H_END:
@@ -95,7 +115,6 @@ MV_V:
 	sw s0,4(sp)
 
 	mv s0,a0
-	li a0,-1
 
 	lb t0,1(a2)				#t0 = indice da linha onde o objeto esta
 	add t1,t0,s0			#t1 = indice da linha destino
@@ -112,6 +131,9 @@ MV_V:
 	lw t4,0(t4)				#t4 = linha destino
 	add t5,t2,t4			#t5 = endereco destino
 	lw t6,0(t5)				#t6 = objeto no endereco destino
+	
+	li a0,-1
+	
 	li t0,2
 	bnez a5,IGNORA_V
 	beq t6,t0,MV_V_END	#se o objeto no destino for parede, n move
@@ -127,7 +149,20 @@ MV_V:
 	beq t6,t0,MORREU	#se o objeto no destino for o jogador, o inimigo alcancou
 	li t0,7
 	beq t0,t6,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
+	li t0,8
+	beq t0,t6,MV_V_CHAVE
 	j IGNORA_V
+	
+	
+MV_V_CHAVE:
+	add t6,t2,t3			#t6 = endereco original
+	sw zero,0(t6)			#coloca 0 no endereco original
+	sw a1,0(t5)				#coloca o objeto no novo endereco
+	sb t1,1(a2)				#muda a posicao do objeto
+	
+	jal CHAVE
+	li a0,0
+	j MV_V_END
 	
 MV_V_CRISTAL:
 	li s9,1
@@ -138,9 +173,9 @@ IGNORA_V:
 	sw zero,0(t6)			#coloca 0 no endereco original
 	
 N_OVERWRITE:
-	li a0,0
 	sw a1,0(t5)				#coloca o objeto no novo endereco
 	sb t1,1(a2)				#muda a posicao do objeto
+	li a0,0
 	j MV_V_END
 
 MV_V_MORANGO:
@@ -211,6 +246,9 @@ MV_DG_C_NUM_NEG:
 	add t3,t3,t0			#t3 = endereco destino
 	lw t4,0(t3)				#t4 = objeto no destino
 	li t5,2
+	
+	li a0,-1
+	
 	bnez a5,IGNORA_DG_C
 	beq t4,t5,MV_DG_C_END	#se o objeto no destino for parede, n move
 	li t5,3
@@ -221,7 +259,24 @@ MV_DG_C_NUM_NEG:
 	beq t4,t5,MV_DG_C_CRISTAL
 	li t5,7
 	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
+	li t5,8
+	beq t4,t5,MV_DG_C_CHAVE
 	j IGNORA_DG_C
+	
+MV_DG_C_CHAVE:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sw a1,0(t3)				#coloca o objeto no novo endereco
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
+	
+	jal CHAVE
+	li a0,0
+	j MV_DG_C_END
 	
 MV_DG_C_CRISTAL:
 	li s9,1
@@ -236,6 +291,7 @@ IGNORA_DG_C:
 	sw a1,0(t3)				#coloca o objeto no novo endereco
 	sb s1,0(a2)				#muda a coluna do objeto
 	sb s0,1(a2)				#muda a linha do objeto
+	li a0,0
 	j MV_DG_C_END
 	
 MV_DG_C_MORANGO:
@@ -250,6 +306,7 @@ MV_DG_C_MORANGO:
 	sb s0,1(a2)				#muda a linha do objeto
 	
 	jal MORANGO
+	li a0,0
 	j MV_DG_C_END
 	
 MV_DG_C_MOLA:
@@ -314,6 +371,9 @@ MV_DG_B_NUM_POS:
 	add t3,t3,t0			#t3 = endereco destino
 	lw t4,0(t3)				#t4 = objeto no destino
 	li t5,2
+	
+	li a0,-1
+	
 	bnez a5,IGNORA_DG_B
 	beq t4,t5,MV_DG_B_END	#se o objeto no destino for parede, n move
 	li t5,3
@@ -326,7 +386,24 @@ MV_DG_B_NUM_POS:
 	beq t4,t5,MV_DG_B_CRISTAL
 	li t5,7
 	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
+	li t5,8
+	beq t4,t5,MV_DG_B_CHAVE
 	j IGNORA_DG_B
+	
+MV_DG_B_CHAVE:
+	slli t1,t1,2
+	add t1,t1,a3			#t1 = endereco da linha original
+	slli t2,t2,2
+	lw t1,0(t1)
+	add t2,t2,t1			#t2 = endereco original
+	sw zero,0(t2)			#coloca 0 no endereco original
+	sw a1,0(t3)				#coloca o objeto no novo endereco
+	sb s1,0(a2)				#muda a coluna do objeto
+	sb s0,1(a2)				#muda a linha do objeto
+	
+	jal CHAVE
+	li a0,0
+	j MV_DG_B_END
 	
 MV_DG_B_CRISTAL:
 	li s9,1
@@ -341,6 +418,8 @@ IGNORA_DG_B:
 	sw a1,0(t3)				#coloca o objeto no novo endereco
 	sb s1,0(a2)				#muda a coluna do objeto
 	sb s0,1(a2)				#muda a linha do objeto
+	li a0,0
+	j MV_DG_B_END
 	
 MV_DG_B_MORANGO:
 	slli t1,t1,2
@@ -354,7 +433,8 @@ MV_DG_B_MORANGO:
 	sb s0,1(a2)				#muda a linha do objeto
 	
 	jal MORANGO
-	j MV_DG_C_END
+	li a0,0
+	j MV_DG_B_END
 	
 MV_DG_B_MOLA:
 	slli t1,t1,2
