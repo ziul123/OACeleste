@@ -1,116 +1,122 @@
 .data
 
-PLAYER_POS:	.byte 1,5
+tPLAYER_POS:	.byte 1,5
 
 .include "mapas/mapa1.data"
+.include "mapas/mapa2.data"
+.include "mapas/mapa3.data"
+.include "mapas/mapa4.data"
+.include "mapas/mapa5.data"
 
 .include "sprites/walk_r.data"
 .include "sprites/walk_l.data"
 .include "sprites/dash_r.data"
 .include "sprites/dash_l.data"
 .include "sprites/jump_r.data"
+.include "sprites/lamar_colec.data"
+.include "sprites/cafe.data"
 
 
 .text
 	
-	la a0,mapa1
-	mv a1,zero
-	mv a2,zero
-	jal D_SETUP
-	
-	la a0,walk_r
-	li a1,1
-	li a2,5
-	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
-	slli a2,a2,4	
-	jal D_SETUP
+#	la a0,mapa1
+#	mv a1,zero
+#	mv a2,zero
+#	jal D_SETUP
+#	
+#	la a0,walk_r
+#	li a1,1
+#	li a2,5
+#	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+#	slli a2,a2,4	
+#	jal D_SETUP
 
 
-LOOP:
+#LOOP:
 
-	jal GET_KEY
+#	jal GET_KEY
 
-	bltz a0,END
+#	bltz a0,END
 
-	j LOOP
-
-
-END:
-	li a7,10
-	ecall
+#	j LOOP
 
 
+#END:
+#	li a7,10
+#	ecall
 
 
 
-#return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
-GET_KEY:
-	addi sp,sp,-4
-	sw ra,0(sp)
-	
-	
-	li t0,0xFF200000		#endereco do controle do teclado
-	lw t1,0(t0)
-	andi t1,t1,0x01
-	li a0,1
-	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
-	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
-	
-	li t0,'a'
-	beq t1,t0,a
-	
-	li t0,'d'
-	beq t1,t0,d
-	
-	li t0,'p'
-	beq t1,t0,p
-	
-	li t0,'D'
-	beq t1,t0,D
-	
-	j GET_KEY_END
-	
-	
-a:
 
-	li a0,2
-	la a1,mapa1
-	jal ANIMACAO
-	
-	li a0,0
-	
-	j GET_KEY_END
-	
-d:
 
-	li a0,1
-	la a1,mapa1
-	jal ANIMACAO
-	
-	li a0,0
-	
-	j GET_KEY_END
-	
-p:
-	li a0,-1
-	
-	j GET_KEY_END
-	
-D:
-	li a0,3
-	la a1,mapa1
-	jal ANIMACAO
-	
-	li a0,3
-	la a1,mapa1
-	jal ANIMACAO
-	
-	li a0,0
-	
-GET_KEY_END:
-	lw ra,0(sp)
-	addi sp,sp,4
-	ret
+##return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
+#GET_KEY:
+#	addi sp,sp,-4
+#	sw ra,0(sp)
+#	
+#	
+#	li t0,0xFF200000		#endereco do controle do teclado
+#	lw t1,0(t0)
+#	andi t1,t1,0x01
+#	li a0,1
+#	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
+#	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
+#	
+#	li t0,'a'
+#	beq t1,t0,a
+#	
+#	li t0,'d'
+#	beq t1,t0,d
+#	
+#	li t0,'p'
+#	beq t1,t0,p
+#	
+#	li t0,'D'
+#	beq t1,t0,D
+#	
+#	j GET_KEY_END
+#	
+#	
+#a:
+
+#	li a0,2
+#	la a1,mapa1
+#	jal ANIMACAO
+#	
+#	li a0,0
+#	
+#	j GET_KEY_END
+#	
+#d:
+
+#	li a0,1
+#	la a1,mapa1
+#	jal ANIMACAO
+#	
+#	li a0,0
+#	
+#	j GET_KEY_END
+#	
+#p:
+#	li a0,-1
+#	
+#	j GET_KEY_END
+#	
+#D:
+#	li a0,3
+#	la a1,mapa1
+#	jal ANIMACAO
+#	
+#	li a0,3
+#	la a1,mapa1
+#	jal ANIMACAO
+#	
+#	li a0,0
+#	
+#GET_KEY_END:
+#	lw ra,0(sp)
+#	addi sp,sp,4
+#	ret
 
 
 
@@ -322,7 +328,7 @@ ANIMACAO_0:
 	j ANIMACAO_END
 
 ANIMACAO_1:
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	
 	la a0,walk_r
@@ -388,7 +394,7 @@ ANIMACAO_1:
 	jal APAGAR
 	
 	
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	addi t1,t1,1
 	sb t1,0(t0)
@@ -404,7 +410,7 @@ ANIMACAO_1:
 	j ANIMACAO_END
 
 ANIMACAO_2:
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	
 	la a0,walk_l
@@ -470,7 +476,7 @@ ANIMACAO_2:
 	jal APAGAR
 	
 	
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	addi t1,t1,-1
 	sb t1,0(t0)
@@ -486,7 +492,7 @@ ANIMACAO_2:
 	j ANIMACAO_END
 
 ANIMACAO_3:
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	
 	la a0,dash_r
@@ -552,7 +558,7 @@ ANIMACAO_3:
 	jal APAGAR
 	
 	
-	la t0,PLAYER_POS
+	la t0,tPLAYER_POS
 	lb t1,0(t0)
 	addi t1,t1,1
 	sb t1,0(t0)

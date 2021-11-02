@@ -14,9 +14,9 @@ test:		.string "aqui"
 .text
 
 MAIN:
-	li a0,4
-	jal SETUP
 	
+
+	la a0,MATRIZ
 	la a1,M_SIZE
 	jal M_SHOW
 	
@@ -95,10 +95,7 @@ N_GRAV:
 	j LOOP
 	
 
-MORREU:
-	la a0,morreu
-	li a7,4
-	ecall
+
 
 END:
 	li a7,10
@@ -160,8 +157,58 @@ GET_KEY:
 	
 	li t0,'Z'
 	beq t1,t0,Z
+	
+	li t0,'1'
+	beq t1,t0,T1
+	
+	li t0,'2'
+	beq t1,t0,T2
+	
+	li t0,'3'
+	beq t1,t0,T3
+	
+	li t0,'4'
+	beq t1,t0,T4
+	
+	li t0,'5'
+	beq t1,t0,T5
 
 	j GET_KEY_NO_KEY
+
+T1:
+	li a0,1
+	jal SETUP
+	
+	li a0,0
+	j GET_KEY_END
+
+T2:
+	li a0,2
+	jal SETUP
+	
+	li a0,0
+	j GET_KEY_END
+
+T3:
+	li a0,3
+	jal SETUP
+	
+	li a0,0
+	j GET_KEY_END
+
+T4:
+	li a0,4
+	jal SETUP
+	
+	li a0,0
+	j GET_KEY_END
+
+T5:
+	li a0,5
+	jal SETUP
+	
+	li a0,0
+	j GET_KEY_END
 
 a:
 	li a0,-1
@@ -613,7 +660,13 @@ GET_KEY_NO_KEY:
 
 
 
-.include "movimentacao.s"
+MORREU:
+	la a0,morreu
+	li a7,4
+	ecall
+	j END
+
+
 .include "show.s"
 .include "setup.s"
 .include "inimigo.s"
