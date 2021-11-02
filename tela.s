@@ -1,122 +1,186 @@
 .data
 
-tPLAYER_POS:	.byte 1,5
+PLAYER_POS:	.byte 1,5
 
 .include "mapas/mapa1.data"
-.include "mapas/mapa2.data"
-.include "mapas/mapa3.data"
-.include "mapas/mapa4.data"
-.include "mapas/mapa5.data"
 
 .include "sprites/walk_r.data"
 .include "sprites/walk_l.data"
 .include "sprites/dash_r.data"
 .include "sprites/dash_l.data"
 .include "sprites/jump_r.data"
-.include "sprites/lamar_colec.data"
-.include "sprites/cafe.data"
-
+.include "sprites/jump_l.data"
 
 .text
 	
-#	la a0,mapa1
-#	mv a1,zero
-#	mv a2,zero
-#	jal D_SETUP
-#	
-#	la a0,walk_r
-#	li a1,1
-#	li a2,5
-#	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
-#	slli a2,a2,4	
-#	jal D_SETUP
+	la a0,mapa1
+	mv a1,zero
+	mv a2,zero
+	jal D_SETUP
+	
+	la a0,walk_r
+	li a1,1
+	li a2,5
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4	
+	jal D_SETUP
 
 
-#LOOP:
+LOOP:
 
-#	jal GET_KEY
+	jal GET_KEY
 
-#	bltz a0,END
+	bltz a0,END
 
-#	j LOOP
-
-
-#END:
-#	li a7,10
-#	ecall
+	j LOOP
 
 
+END:
+	li a7,10
+	ecall
 
 
 
-##return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
-#GET_KEY:
-#	addi sp,sp,-4
-#	sw ra,0(sp)
-#	
-#	
-#	li t0,0xFF200000		#endereco do controle do teclado
-#	lw t1,0(t0)
-#	andi t1,t1,0x01
-#	li a0,1
-#	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
-#	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
-#	
-#	li t0,'a'
-#	beq t1,t0,a
-#	
-#	li t0,'d'
-#	beq t1,t0,d
-#	
-#	li t0,'p'
-#	beq t1,t0,p
-#	
-#	li t0,'D'
-#	beq t1,t0,D
-#	
-#	j GET_KEY_END
-#	
-#	
-#a:
 
-#	li a0,2
-#	la a1,mapa1
-#	jal ANIMACAO
-#	
-#	li a0,0
-#	
-#	j GET_KEY_END
-#	
-#d:
 
-#	li a0,1
-#	la a1,mapa1
-#	jal ANIMACAO
-#	
-#	li a0,0
-#	
-#	j GET_KEY_END
-#	
-#p:
-#	li a0,-1
-#	
-#	j GET_KEY_END
-#	
-#D:
-#	li a0,3
-#	la a1,mapa1
-#	jal ANIMACAO
-#	
-#	li a0,3
-#	la a1,mapa1
-#	jal ANIMACAO
-#	
-#	li a0,0
-#	
-#GET_KEY_END:
-#	lw ra,0(sp)
-#	addi sp,sp,4
-#	ret
+#return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
+GET_KEY:
+	addi sp,sp,-4
+	sw ra,0(sp)
+	
+	
+	li t0,0xFF200000		#endereco do controle do teclado
+	lw t1,0(t0)
+	andi t1,t1,0x01
+	li a0,1
+	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
+	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
+	
+	li t0,'a'
+	beq t1,t0,a
+	
+	li t0,'d'
+	beq t1,t0,d
+	
+	li t0,'p'
+	beq t1,t0,p
+	
+	li t0,'D'
+	beq t1,t0,D
+	
+	li t0,'A'
+	beq t1,t0,A
+	
+	li t0,'w'
+	beq t1,t0,w
+	
+	li t0,'e'
+	beq t1,t0,e
+	
+	li t0,'q'
+	beq t1,t0,q
+
+	li t0,'Z'
+	beq t1,t0,Z
+	
+	li t0,'C'
+	beq t1,t0,C
+	j GET_KEY_END
+	
+	
+a:
+
+	li a0,1
+	la a1,mapa1
+	li s8,0
+	jal ANIMACAO
+	
+	li a0,0
+	j GET_KEY_END
+	
+d:
+
+	li a0,1
+	la a1,mapa1
+	li s8,1
+	jal ANIMACAO
+	
+	li a0,0
+	j GET_KEY_END
+	
+p:
+	li a0,-1
+	
+	j GET_KEY_END
+	
+D:
+	li a0,2
+	la a1,mapa1
+	li s8,1
+	jal ANIMACAO
+	
+	li a0,2
+	la a1,mapa1
+	li s8,1
+	jal ANIMACAO
+	li a0,0
+	j GET_KEY_END
+A:
+	li a0,2
+	la a1,mapa1
+	li s8,0
+	jal ANIMACAO
+	li a0,2
+	la a1,mapa1
+	li s8,0
+	jal ANIMACAO
+	li a0,0
+	j GET_KEY_END
+	
+w:	li a0,3
+	la a1,mapa1
+	jal ANIMACAO
+	j GET_KEY_END
+	
+q:	li a0,4
+	la a1,mapa1
+	li,s8,0
+	jal ANIMACAO
+	j GET_KEY_END
+	
+e:	li a0,4
+	la a1,mapa1
+	li,s8,1
+	jal ANIMACAO	
+	j GET_KEY_END
+	
+Z:
+	li a0,6
+	la a1,mapa1
+	li s8,0
+	jal ANIMACAO
+	li a0,6
+	la a1,mapa1
+	li s8,0
+	jal ANIMACAO
+	li a0,0
+	j GET_KEY_END
+	
+C:
+	li a0,6
+	la a1,mapa1
+	li s8,1
+	jal ANIMACAO
+	li a0,6
+	la a1,mapa1
+	li s8,1
+	jal ANIMACAO
+	li a0,0
+	j GET_KEY_END
+GET_KEY_END:
+	lw ra,0(sp)
+	addi sp,sp,4
+	ret
 
 
 
@@ -257,17 +321,23 @@ DESENHAR_END:
 
 
 #0 -cair
-#1 -andar para direita
-#2 -andar para esquerda
-#3 -andar para direita com dash
-#4 -andar para esquerda com dash
-#5 -pular diagonal direita
-#6 -pular diagonal esquerda
-#7 -pular diagonal direita com dash
+#1 -andar para direita x1
+#2 -andar para esquerda x1
+
+#3 -andar para direita com dash x3
+#4 -andar para esquerda com dash x3
+
+#5 -pular diagonal direita x4
+#6 -pular diagonal esquerda x4
+
+#7 -pular diagonal direita com dash 
 #8 -pular diagonal esquerda com dash
-#9 -pular baixo diagonal direita com dash
-#10 -pular baixo diagonal esquerda com dash
-#11 -pulo reto
+
+#9 -pular baixo diagonal direita com dash x6
+#10 -pular baixo diagonal esquerda com dash x6
+
+#11 -pulo reto x2
+
 #12 -pulo reto com dash
 #13 -cair reto com dash
 
@@ -286,7 +356,7 @@ ANIMACAO:
 	
 	li t0,1
 	beq a0,t0,ANIMACAO_1
-	
+		
 	li t0,2
 	beq a0,t0,ANIMACAO_2
 	
@@ -317,21 +387,19 @@ ANIMACAO:
 	li t0,11
 	beq a0,t0,ANIMACAO_11
 	
-	li t0,12
-	beq a0,t0,ANIMACAO_12
-	
-	li t0,13
-	beq a0,t0,ANIMACAO_13
-	
 ANIMACAO_0:
 
 	j ANIMACAO_END
 
 ANIMACAO_1:
-	la t0,tPLAYER_POS
+	la t0,PLAYER_POS
 	lb t1,0(t0)
-	
+	beqz s8,AN1_L0
 	la a0,walk_r
+	beqz zero, AN1_CONT0
+AN1_L0:	
+	la a0,walk_l
+AN1_CONT0:
 	mv a1,s0
 	mv a2,t1
 	lb a3,1(t0)
@@ -339,8 +407,67 @@ ANIMACAO_1:
 	slli a3,a3,4
 	jal APAGAR
 	
+	beqz s8,AN1_L1
 	la a0,walk01_r
 	addi a1,a2,4
+	beqz zero AN1_CONT1
+AN1_L1:
+	la a0,walk01_l
+	addi a1,a2,-4
+AN1_CONT1:
+	mv a2,a3
+	jal D_SETUP
+
+
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN1_L2	
+	la a0,walk01_r
+	beqz zero AN1_CONT2
+AN1_L2:
+	la a0,walk01_l
+AN1_CONT2:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	beqz s8,AN1_L3	
+	la a0,walk02_r
+	addi a1,a2,4
+	beqz zero AN1_CONT3
+AN1_L3:	
+	la a0,walk02_l
+	addi a1,a2,-4
+AN1_CONT3:	
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN1_L4
+	la a0,walk02_r
+	beqz zero AN1_CONT4
+AN1_L4:
+	la a0,walk02_l
+AN1_CONT4:		
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	beqz s8,AN1_L5
+	la a0,walk03_r
+	addi a1,a2,4
+	beqz zero AN1_CONT5
+AN1_L5:	
+	la a0,walk03_l
+	addi a1,a2,-4
+AN1_CONT5:	
 	mv a2,a3
 	jal D_SETUP
 
@@ -350,57 +477,31 @@ ANIMACAO_1:
 	li a7,32
 	ecall
 	
-	
-	la a0,walk01_r
-	mv a3,a2
-	mv a2,a1
-	mv a1,s0
-	jal APAGAR
-	
-	la a0,walk02_r
-	addi a1,a2,4
-	mv a2,a3
-	jal D_SETUP
-	
-	
-	
-	li a0,150
-	li a7,32
-	ecall
-	
-	
-	la a0,walk02_r
-	mv a3,a2
-	mv a2,a1
-	mv a1,s0
-	jal APAGAR
-	
+	beqz s8,AN1_L6
 	la a0,walk03_r
-	addi a1,a2,4
-	mv a2,a3
-	jal D_SETUP
-
-	
-	
-	li a0,150
-	li a7,32
-	ecall
-	
-	
-	la a0,walk03_r
+	beqz zero AN1_CONT6
+AN1_L6:	
+	la a0,walk03_l
+AN1_CONT6:	
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
 	
-	la t0,tPLAYER_POS
+	la t0,PLAYER_POS
 	lb t1,0(t0)
+	
+	beqz s8,AN1_L7
 	addi t1,t1,1
 	sb t1,0(t0)
-	
-	
 	la a0,walk_r
+	beqz zero AN1_CONT7
+AN1_L7:
+	addi t1,t1,-1
+	sb t1,0(t0)
+	la a0,walk_l
+AN1_CONT7:		
 	mv a1,t1
 	lb a2,1(t0)
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
@@ -410,180 +511,480 @@ ANIMACAO_1:
 	j ANIMACAO_END
 
 ANIMACAO_2:
-	la t0,tPLAYER_POS
+	la t0,PLAYER_POS
 	lb t1,0(t0)
-	
-	la a0,walk_l
+	beqz s8,AN2_L0
+	la a0,dash_r
+	beqz zero, AN2_CONT0
+AN2_L0:	
+	la a0,dash_l
+AN2_CONT0:
 	mv a1,s0
 	mv a2,t1
 	lb a3,1(t0)
 	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
 	slli a3,a3,4
 	jal APAGAR
-	
-	la a0,walk01_l
+	beqz s8,AN2_L1
+	la a0,dash01_r
+	addi a1,a2,4
+	beqz zero, AN2_CONT1
+AN2_L1:	
+	la a0,dash01_l
 	addi a1,a2,-4
+AN2_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
 	
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
+	beqz s8,AN2_L2
+	la a0,dash01_r
+	beqz zero, AN2_CONT2
+AN2_L2:
+	la a0,dash01_l
+AN2_CONT2:	
 	
-	la a0,walk01_l
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
-	la a0,walk02_l
+	beqz s8,AN2_L3
+	la a0,dash02_r
+	addi a1,a2,4
+	beqz zero, AN2_CONT3
+AN2_L3:
+	la a0,dash02_l
 	addi a1,a2,-4
+AN2_CONT3:	
 	mv a2,a3
 	jal D_SETUP
 	
 	
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
-	
-	la a0,walk02_l
+	beqz s8,AN2_L4
+	la a0,dash02_r
+	beqz zero, AN2_CONT4
+AN2_L4:
+	la a0,dash02_l
+AN2_CONT4:	
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
-	la a0,walk03_l
+	beqz s8,AN2_L5	
+	la a0,dash03_r
+	addi a1,a2,4
+	beqz zero, AN2_CONT5
+AN2_L5:
+	la a0,dash03_l
 	addi a1,a2,-4
+AN2_CONT5:
+			
 	mv a2,a3
 	jal D_SETUP
 
 	
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
+	beqz s8,AN2_L6
+	la a0,dash03_r
+	beqz zero, AN2_CONT6
+AN2_L6:
+	la a0,dash03_l
+AN2_CONT6:	
 	
-	la a0,walk03_l
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
 	
-	la t0,tPLAYER_POS
+	la t0,PLAYER_POS
 	lb t1,0(t0)
+
+	
+	
+	beqz s8,AN2_L7
+	addi t1,t1,1
+	sb t1,0(t0)
+	la a0,dash_r
+	beqz zero, AN2_CONT7
+AN2_L7:
 	addi t1,t1,-1
 	sb t1,0(t0)
-	
-	
-	la a0,walk_l
+	la a0,dash_l
+AN2_CONT7:
 	mv a1,t1
 	lb a2,1(t0)
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
 	slli a2,a2,4
 	jal D_SETUP
-
+	
+	
 	j ANIMACAO_END
 
 ANIMACAO_3:
-	la t0,tPLAYER_POS
+	la t0,PLAYER_POS
 	lb t1,0(t0)
-	
-	la a0,dash_r
+	beqz s8,AN3_L0
+	la a0,jump_r
+	beqz zero, AN3_CONT0
+AN3_L0:	
+	la a0,jump_l
+AN3_CONT0:
 	mv a1,s0
 	mv a2,t1
+
 	lb a3,1(t0)
 	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
 	slli a3,a3,4
 	jal APAGAR
 	
-	la a0,dash01_r
-	addi a1,a2,4
+	beqz s8,AN3_L1
+	la a0,jump_r
+	addi a1,a2,-1280
+	beqz zero, AN3_CONT1
+AN3_L1:
+	la a0,jump_l
+	addi a1,a2,-1280
+AN3_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	
-	
-	li a0,30
+
+	li a0,150
 	li a7,32
 	ecall
-	
-	
-	la a0,dash01_r
+	beqz s8,AN3_L2	
+	la a0,jump_r
+	beqz zero, AN3_CONT2
+AN3_L2:
+	la a0,jump_l
+AN3_CONT2:	
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
-	la a0,dash02_r
-	addi a1,a2,4
+	beqz s8,AN3_L3	
+	la a0,jump_r
+	addi a1,a2,-1280
+	beqz zero, AN3_CONT3
+AN3_L3:	
+	la a0,jump_l
+	addi a1,a2,-1280
+AN3_CONT3:	
 	mv a2,a3
 	jal D_SETUP
 	
 	
-	
-	li a0,30
+	li a0,150
 	li a7,32
 	ecall
 	
-	
-	la a0,dash02_r
+	beqz s8,AN3_L4
+	la a0,jump_r
+	beqz zero, AN3_CONT4
+AN3_L4:
+	la a0,jump_l
+AN3_CONT4:		
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
-	
-	la a0,dash03_r
-	addi a1,a2,4
+	beqz s8,AN3_L5
+	la a0,jump_r
+	addi a1,a2,-1280
+	beqz zero, AN3_CONT5
+AN3_L5:	
+	la a0,jump_l
+	addi a1,a2,-1280
+AN3_CONT5:	
 	mv a2,a3
 	jal D_SETUP
 
-	
-	
-	li a0,30
+	li a0,150
 	li a7,32
 	ecall
 	
-	
-	la a0,dash03_r
+	beqz s8,AN3_L6
+	la a0,jump_r
+	beqz zero AN3_CONT6
+AN3_L6:	
+	la a0,jump_l
+AN3_CONT6:	
 	mv a3,a2
 	mv a2,a1
 	mv a1,s0
 	jal APAGAR
 	
+	la t0,PLAYER_POS
+	lb t1,1(t0)
 	
-	la t0,tPLAYER_POS
-	lb t1,0(t0)
-	addi t1,t1,1
-	sb t1,0(t0)
-	
-	
-	la a0,dash_r
-	mv a1,t1
+	addi t1,t1,-1
+	sb t1,1(t0)
+	beqz s8,AN3_L7
+	la a0,jump_r
+	beqz zero AN3_CONT7
+AN3_L7:
+	la a0,jump_l
+AN3_CONT7:		
+	lb a1,0(t0)
 	lb a2,1(t0)
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
 	slli a2,a2,4
 	jal D_SETUP
-	
-	
+		
 	j ANIMACAO_END
 
 ANIMACAO_4:
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	beqz s8,AN4_L0
+	la a0,jump_r
+	beqz zero, AN4_CONT0
+AN4_L0:	
+	la a0,jump_l
+AN4_CONT0:
+	mv a1,s0
+	mv a2,t1
 
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	beqz s8,AN4_L1
+	la a0,jump_r
+	addi a1,a2,-1276
+	beqz zero, AN4_CONT1
+AN4_L1:
+	la a0,jump_l
+	addi a1,a2,-1284
+AN4_CONT1:
+	mv a2,a3
+	jal D_SETUP
+
+
+	li a0,150
+	li a7,32
+	ecall
+	beqz s8,AN4_L2	
+	la a0,jump_r
+	beqz zero, AN4_CONT2
+AN4_L2:
+	la a0,jump_l
+AN4_CONT2:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	beqz s8,AN4_L3	
+	la a0,jump_r
+	addi a1,a2,-1276
+	beqz zero, AN4_CONT3
+AN4_L3:	
+	la a0,jump_l
+	addi a1,a2,-1284
+AN4_CONT3:	
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN4_L4
+	la a0,jump_r
+	beqz zero, AN4_CONT4
+AN4_L4:
+	la a0,jump_l
+AN4_CONT4:		
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	beqz s8,AN4_L5
+	la a0,jump_r
+	addi a1,a2,-1276
+	beqz zero, AN4_CONT5
+AN4_L5:	
+	la a0,jump_l
+	addi a1,a2,-1284
+AN4_CONT5:	
+	mv a2,a3
+	jal D_SETUP
+
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN4_L6
+	la a0,jump_r
+	beqz zero AN4_CONT6
+AN4_L6:	
+	la a0,jump_l
+AN4_CONT6:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la t0,PLAYER_POS
+	lb t1,1(t0)
+	lb t2,0(t0)
+	addi t1,t1,-1
+	sb t1,1(t0)
+	beqz s8,AN4_L7
+	addi t2,t2,1
+	la a0,jump_r
+	beqz zero AN4_CONT7
+AN4_L7:
+	addi t2,t2,-1
+	la a0,jump_l
+AN4_CONT7:
+	sb t2,0(t0)		
+	mv a1,t2
+	mv a2,t1
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP	
 	j ANIMACAO_END
-
 ANIMACAO_5:
 
 	j ANIMACAO_END
 
 ANIMACAO_6:
 
+	la t0,PLAYER_POS
+	lb t1,0(t0)
+	beqz s8,AN6_L0
+	la a0,jump_r
+	beqz zero, AN6_CONT0
+AN6_L0:	
+	la a0,jump_l
+AN6_CONT0:
+	mv a1,s0
+	mv a2,t1
+
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	beqz s8,AN6_L1
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN6_CONT1
+AN6_L1:
+	la a0,jump_l
+	addi a1,a2,1276
+AN6_CONT1:
+	mv a2,a3
+	jal D_SETUP
+
+
+	li a0,150
+	li a7,32
+	ecall
+	beqz s8,AN6_L2	
+	la a0,jump_r
+	beqz zero, AN6_CONT2
+AN6_L2:
+	la a0,jump_l
+AN6_CONT2:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	beqz s8,AN6_L3	
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN6_CONT3
+AN6_L3:	
+	la a0,jump_l
+	addi a1,a2,1276
+AN6_CONT3:	
+	mv a2,a3
+	jal D_SETUP
+	
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN6_L4
+	la a0,jump_r
+	beqz zero, AN6_CONT4
+AN6_L4:
+	la a0,jump_l
+AN6_CONT4:		
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	beqz s8,AN6_L5
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN6_CONT5
+AN6_L5:	
+	la a0,jump_l
+	addi a1,a2,1276
+AN6_CONT5:	
+	mv a2,a3
+	jal D_SETUP
+
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN6_L6
+	la a0,jump_r
+	beqz zero AN6_CONT6
+AN6_L6:	
+	la a0,jump_l
+AN6_CONT6:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la t0,PLAYER_POS
+	lb t1,1(t0)
+	lb t2,0(t0)
+	addi t1,t1,1
+	sb t1,1(t0)
+	beqz s8,AN6_L7
+	addi t2,t2,1
+	la a0,jump_r
+	beqz zero AN6_CONT7
+AN6_L7:
+	addi t2,t2,-1
+	la a0,jump_l
+AN6_CONT7:
+	sb t2,0(t0)		
+	mv a1,t2
+	mv a2,t1
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP	
 	j ANIMACAO_END
 
 ANIMACAO_7:
@@ -604,13 +1005,7 @@ ANIMACAO_10:
 
 ANIMACAO_11:
 
-	j ANIMACAO_END
 
-ANIMACAO_12:
-
-	j ANIMACAO_END
-
-ANIMACAO_13:
 
 	
 
