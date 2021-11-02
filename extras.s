@@ -13,7 +13,9 @@ morango:	.string "voce coletou um lamar!"
 MOLA:
 	addi sp,sp,-4
 	sw ra,0(sp)
-
+	
+	li s9,1
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS

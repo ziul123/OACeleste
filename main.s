@@ -312,25 +312,26 @@ w_PULO_PAREDE:
 A:
 	beqz s9,N_DASH
 	
-	li a0,-1
-	li a1,1
-	la a2,PLAYER_POS
-	la a3,MATRIZ
-	la a4,M_SIZE
-	li a5,0
-
-	jal MV_H				#move o jogador um espaco para esquerda
-	
-	li a0,-1
-	li a1,1
-	la a2,PLAYER_POS
-	la a3,MATRIZ
-	la a4,M_SIZE
-	li a5,0
-
-	jal MV_H				#move o jogador um espaco para esquerda
-	
 	li s9,0
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para esquerda
+	
+	li a0,-1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_H				#move o jogador um espaco para esquerda
+	
 
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
@@ -349,26 +350,27 @@ A:
 C:
 	beqz s9,N_DASH
 	
-	li a0,1
-	li a1,1
-	la a2,PLAYER_POS
-	la a3,MATRIZ
-	la a4,M_SIZE
-	li a5,0
-
-	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
-	
-	
-	li a0,1
-	li a1,1
-	la a2,PLAYER_POS
-	la a3,MATRIZ
-	la a4,M_SIZE
-	li a5,0
-
-	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
-	
 	li s9,0
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
+	
+	
+	li a0,1
+	li a1,1
+	la a2,PLAYER_POS
+	la a3,MATRIZ
+	la a4,M_SIZE
+	li a5,0
+
+	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
+	
 	
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
@@ -387,6 +389,8 @@ C:
 
 D:
 	beqz s9,N_DASH
+	
+	li s9,0
 
 	li a0,1
 	li a1,1
@@ -406,7 +410,6 @@ D:
 
 	jal MV_H				#move o jogador um espaco para direita
 
-	li s9,0
 
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
@@ -425,6 +428,8 @@ D:
 
 E:
 	beqz s9,N_DASH
+	
+	li s9,0
 
 	li a0,1
 	li a1,1
@@ -444,7 +449,6 @@ E:
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
 
-	li s9,0
 	li s10,1
 	csrr s11,3073
 
@@ -454,6 +458,8 @@ E:
 
 Q:
 	beqz s9,N_DASH
+	
+	li s9,0
 
 	li a0,-1
 	li a1,1
@@ -474,7 +480,6 @@ Q:
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima esquerda
 
 
-	li s9,0
 	li s10,1
 	csrr s11,3073
 	
@@ -516,6 +521,8 @@ S:
 W:
 	beqz s9,N_DASH
 	
+	li s9,0
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -536,7 +543,6 @@ W:
 
 	jal MV_V				#move o jogador 1 espaco para cima
 
-	li s9,0
 	li s10,1
 	csrr s11,3073
 
@@ -546,6 +552,8 @@ W:
 
 Z:
 	beqz s9,N_DASH
+	
+	li s9,0
 
 	li a0,-1
 	li a1,1
@@ -574,7 +582,6 @@ Z:
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	li s9,0
 
 	li s8,0					#jogador vira para a esquerda
 	li a0,0

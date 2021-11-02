@@ -31,6 +31,12 @@ MV_H:
 	beq t4,t5,MV_H_MOLA	#se o objeto no destino for mola, chama a funcao de mola
 	li t5,4
 	beq t4,t5,MV_H_MORANGO
+	li t4,6
+	beq t4,t5,MV_H_CRISTAL
+	j IGNORA_H
+	
+MV_H_CRISTAL:
+	li s9,1
 	
 IGNORA_H:
 	slli t4,t0,2
@@ -111,6 +117,12 @@ MV_V:
 	beq t6,t0,MV_V_MORANGO
 	li t0,5
 	beq t6,t0,MORREU
+	li t0,6
+	beq t6,t0,MV_V_CRISTAL
+	j IGNORA_V
+	
+MV_V_CRISTAL:
+	li s9,1
 	
 IGNORA_V:
 	bnez a6,N_OVERWRITE
@@ -197,6 +209,12 @@ MV_DG_C_NUM_NEG:
 	beq t4,t5,MV_DG_C_MOLA
 	li t5,4
 	beq t4,t5,MV_DG_C_MORANGO
+	li t5,6
+	beq t4,t5,MV_DG_C_CRISTAL
+	j IGNORA_DG_C
+	
+MV_DG_C_CRISTAL:
+	li s9,1
 	
 IGNORA_DG_C:
 	slli t1,t1,2
@@ -294,6 +312,11 @@ MV_DG_B_NUM_POS:
 	beq t4,t5,MV_DG_B_MORANGO
 	li t5,5
 	beq t4,t5,MORREU
+	li t5,6
+	beq t4,t5,MV_DG_B_CRISTAL
+	
+MV_DG_B_CRISTAL:
+	li s9,1
 	
 IGNORA_DG_B:
 	slli t1,t1,2
