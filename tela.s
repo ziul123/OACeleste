@@ -1,8 +1,13 @@
 .data
 
-PLAYER_POS:	.byte 1,5
+PLAYER_POS_A:	.byte 1,5
 
 .include "mapas/mapa1.data"
+.include "mapas/mapa2.data"
+.include "mapas/mapa3.data"
+.include "mapas/mapa4.data"
+.include "mapas/mapa5.data"
+
 
 .include "sprites/walk_r.data"
 .include "sprites/walk_l.data"
@@ -10,177 +15,12 @@ PLAYER_POS:	.byte 1,5
 .include "sprites/dash_l.data"
 .include "sprites/jump_r.data"
 .include "sprites/jump_l.data"
+.include "sprites/lamar_colec.data"
+.include "sprites/cafe.data"
 
 .text
 	
-	la a0,mapa1
-	mv a1,zero
-	mv a2,zero
-	jal D_SETUP
-	
-	la a0,walk_r
-	li a1,1
-	li a2,5
-	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
-	slli a2,a2,4	
-	jal D_SETUP
 
-
-LOOP:
-
-	jal GET_KEY
-
-	bltz a0,END
-
-	j LOOP
-
-
-END:
-	li a7,10
-	ecall
-
-
-
-
-
-#return a0= flag (-1 para quit, 0 para tecla pressionada, 1 para tecla n pressionada)
-GET_KEY:
-	addi sp,sp,-4
-	sw ra,0(sp)
-	
-	
-	li t0,0xFF200000		#endereco do controle do teclado
-	lw t1,0(t0)
-	andi t1,t1,0x01
-	li a0,1
-	beqz t1,GET_KEY_END		#se nao foi pressionada tecla, pula
-	lw t1,4(t0)				#t1 = tecla pressionada pelo usuario
-	
-	li t0,'a'
-	beq t1,t0,a
-	
-	li t0,'d'
-	beq t1,t0,d
-	
-	li t0,'p'
-	beq t1,t0,p
-	
-	li t0,'D'
-	beq t1,t0,D
-	
-	li t0,'A'
-	beq t1,t0,A
-	
-	li t0,'w'
-	beq t1,t0,w
-	
-	li t0,'e'
-	beq t1,t0,e
-	
-	li t0,'q'
-	beq t1,t0,q
-
-	li t0,'Z'
-	beq t1,t0,Z
-	
-	li t0,'C'
-	beq t1,t0,C
-	j GET_KEY_END
-	
-	
-a:
-
-	li a0,1
-	la a1,mapa1
-	li s8,0
-	jal ANIMACAO
-	
-	li a0,0
-	j GET_KEY_END
-	
-d:
-
-	li a0,1
-	la a1,mapa1
-	li s8,1
-	jal ANIMACAO
-	
-	li a0,0
-	j GET_KEY_END
-	
-p:
-	li a0,-1
-	
-	j GET_KEY_END
-	
-D:
-	li a0,2
-	la a1,mapa1
-	li s8,1
-	jal ANIMACAO
-	
-	li a0,2
-	la a1,mapa1
-	li s8,1
-	jal ANIMACAO
-	li a0,0
-	j GET_KEY_END
-A:
-	li a0,2
-	la a1,mapa1
-	li s8,0
-	jal ANIMACAO
-	li a0,2
-	la a1,mapa1
-	li s8,0
-	jal ANIMACAO
-	li a0,0
-	j GET_KEY_END
-	
-w:	li a0,3
-	la a1,mapa1
-	jal ANIMACAO
-	j GET_KEY_END
-	
-q:	li a0,4
-	la a1,mapa1
-	li,s8,0
-	jal ANIMACAO
-	j GET_KEY_END
-	
-e:	li a0,4
-	la a1,mapa1
-	li,s8,1
-	jal ANIMACAO	
-	j GET_KEY_END
-	
-Z:
-	li a0,6
-	la a1,mapa1
-	li s8,0
-	jal ANIMACAO
-	li a0,6
-	la a1,mapa1
-	li s8,0
-	jal ANIMACAO
-	li a0,0
-	j GET_KEY_END
-	
-C:
-	li a0,6
-	la a1,mapa1
-	li s8,1
-	jal ANIMACAO
-	li a0,6
-	la a1,mapa1
-	li s8,1
-	jal ANIMACAO
-	li a0,0
-	j GET_KEY_END
-GET_KEY_END:
-	lw ra,0(sp)
-	addi sp,sp,4
-	ret
 
 
 
@@ -392,7 +232,7 @@ ANIMACAO_0:
 	j ANIMACAO_END
 
 ANIMACAO_1:
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	beqz s8,AN1_L0
 	la a0,walk_r
@@ -489,7 +329,7 @@ AN1_CONT6:
 	jal APAGAR
 	
 	
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	
 	beqz s8,AN1_L7
@@ -511,7 +351,7 @@ AN1_CONT7:
 	j ANIMACAO_END
 
 ANIMACAO_2:
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	beqz s8,AN2_L0
 	la a0,dash_r
@@ -613,7 +453,7 @@ AN2_CONT6:
 	jal APAGAR
 	
 	
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 
 	
@@ -638,7 +478,7 @@ AN2_CONT7:
 	j ANIMACAO_END
 
 ANIMACAO_3:
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	beqz s8,AN3_L0
 	la a0,jump_r
@@ -732,7 +572,7 @@ AN3_CONT6:
 	mv a1,s0
 	jal APAGAR
 	
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,1(t0)
 	
 	addi t1,t1,-1
@@ -752,7 +592,7 @@ AN3_CONT7:
 	j ANIMACAO_END
 
 ANIMACAO_4:
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	beqz s8,AN4_L0
 	la a0,jump_r
@@ -846,7 +686,7 @@ AN4_CONT6:
 	mv a1,s0
 	jal APAGAR
 	
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,1(t0)
 	lb t2,0(t0)
 	addi t1,t1,-1
@@ -872,7 +712,7 @@ ANIMACAO_5:
 
 ANIMACAO_6:
 
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,0(t0)
 	beqz s8,AN6_L0
 	la a0,jump_r
@@ -966,7 +806,7 @@ AN6_CONT6:
 	mv a1,s0
 	jal APAGAR
 	
-	la t0,PLAYER_POS
+	la t0,PLAYER_POS_A
 	lb t1,1(t0)
 	lb t2,0(t0)
 	addi t1,t1,1

@@ -46,6 +46,7 @@ LOOP:
 	la a0,MATRIZ
 	la a1,M_SIZE
 	jal M_SHOW
+
 	
 	la a0,n
 	li a7,4
@@ -225,6 +226,8 @@ T5:
 	j GET_KEY_END
 
 a:
+	li s8,0					#jogador vira para a esquerda
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -233,7 +236,13 @@ a:
 	li a5,0
 
 	jal MV_H				#move o jogador um espaco para esquerda
-
+	
+	bnez a0,a_CONT
+	
+	li a0,1
+	#jal ANIMACAO
+	
+a_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	la a0,PLAYER_POS
 	la a1,MATRIZ
@@ -244,11 +253,11 @@ a:
 	
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
 d:
+	li s8,1					#jogador vira para a direita
 
 	li a0,1
 	li a1,1
@@ -259,6 +268,12 @@ d:
 
 	jal MV_H				#move o jogador um espaco para direita
 
+	bnez a0,d_CONT
+	
+	li a0,1
+	#jal ANIMACAO
+	
+d_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
 	la a0,PLAYER_POS
@@ -270,7 +285,6 @@ d:
 	
 	csrr s11,3073			#comeca o timer da gravidade
 
-	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
