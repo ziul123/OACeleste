@@ -14,7 +14,7 @@ test:		.string "aqui"
 .text
 
 MAIN:
-	li a0,1
+	li a0,5
 	jal SETUP
 	
 	la a1,M_SIZE
@@ -30,7 +30,7 @@ MAIN:
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade
 LOOP:
-
+	jal INIMIGO_CTRL
 
 	jal GET_KEY
 	
@@ -179,6 +179,7 @@ a:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 	
 	csrr s11,3073			#comeca o timer da gravidade
 	
@@ -204,6 +205,7 @@ d:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 	
 	csrr s11,3073			#comeca o timer da gravidade
 
@@ -341,6 +343,7 @@ A:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
@@ -380,6 +383,7 @@ C:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
@@ -419,6 +423,7 @@ D:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 
 	csrr s11,3073			#comeca o timer da gravidade
 
@@ -580,6 +585,7 @@ Z:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
+	xori s9,a0,1
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
@@ -610,3 +616,4 @@ GET_KEY_NO_KEY:
 .include "movimentacao.s"
 .include "show.s"
 .include "setup.s"
+.include "inimigo.s"

@@ -31,8 +31,12 @@ MV_H:
 	beq t4,t5,MV_H_MOLA	#se o objeto no destino for mola, chama a funcao de mola
 	li t5,4
 	beq t4,t5,MV_H_MORANGO
-	li t4,6
+	li t5,6
 	beq t4,t5,MV_H_CRISTAL
+	li t5,1
+	beq t4,t5,MORREU	#se o objeto no destino for o jogador, o inimigo alcancou
+	li t5,7
+	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
 	j IGNORA_H
 	
 MV_H_CRISTAL:
@@ -119,6 +123,10 @@ MV_V:
 	beq t6,t0,MORREU
 	li t0,6
 	beq t6,t0,MV_V_CRISTAL
+	li t0,1
+	beq t6,t0,MORREU	#se o objeto no destino for o jogador, o inimigo alcancou
+	li t0,7
+	beq t0,t6,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
 	j IGNORA_V
 	
 MV_V_CRISTAL:
@@ -211,6 +219,8 @@ MV_DG_C_NUM_NEG:
 	beq t4,t5,MV_DG_C_MORANGO
 	li t5,6
 	beq t4,t5,MV_DG_C_CRISTAL
+	li t5,7
+	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
 	j IGNORA_DG_C
 	
 MV_DG_C_CRISTAL:
@@ -314,6 +324,9 @@ MV_DG_B_NUM_POS:
 	beq t4,t5,MORREU
 	li t5,6
 	beq t4,t5,MV_DG_B_CRISTAL
+	li t5,7
+	beq t4,t5,MORREU	#se o objeto no destino for o inimigo, o jogador tocou nele
+	j IGNORA_DG_B
 	
 MV_DG_B_CRISTAL:
 	li s9,1
