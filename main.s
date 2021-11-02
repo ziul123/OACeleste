@@ -5,6 +5,7 @@
 
 PLAYER_POS:	.byte 1,5		#coluna,linha
 M_SIZE:		.word 15,20		#n_linhas, n_colunas
+NIVEL:		.byte 1
 
 esp:		.string " "
 n:			.string "\n"
@@ -31,6 +32,11 @@ MAIN:
 #s11 = timer da gravidade
 LOOP:
 	#jal INIMIGO_CTRL
+
+	la t0,PLAYER_POS
+	lb t0,0(t0)
+	li t1,19
+	beq t0,t1,PROX_NIVEL
 
 	jal GET_KEY
 	
@@ -95,7 +101,15 @@ N_GRAV:
 	j LOOP
 	
 
-
+PROX_NIVEL:
+	la t0,NIVEL
+	lb t1,0(t0)
+	addi t1,t1,1
+	sb t1,0(t0)
+	mv a0,t1
+	jal SETUP
+	
+	j LOOP
 
 END:
 	li a7,10

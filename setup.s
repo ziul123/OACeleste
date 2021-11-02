@@ -210,6 +210,13 @@ L1:
 	li a2,0
 	jal D_SETUP
 	
+	la a0,walk_r
+	li a1,1
+	li a2,5
+	slli a1,a1,4
+	slli a2,a2,4
+	jal D_SETUP
+	
 	la a0,lamar_colec
 	li a1,12
 	li a2,8
@@ -230,6 +237,13 @@ L2:
 	li a2,0
 	jal D_SETUP
 	
+	la a0,walk_r
+	li a1,1
+	li a2,12
+	slli a1,a1,4
+	slli a2,a2,4
+	jal D_SETUP
+	
 	la a0,lamar_colec
 	li a1,5
 	li a2,5
@@ -248,6 +262,13 @@ L3:
 	la a0,mapa3
 	li a1,0
 	li a2,0
+	jal D_SETUP
+	
+	la a0,walk_r
+	li a1,1
+	li a2,7
+	slli a1,a1,4
+	slli a2,a2,4
 	jal D_SETUP
 	
 	la a0,lamar_colec
@@ -277,6 +298,13 @@ L4:
 	li a2,0
 	jal D_SETUP
 	
+	la a0,walk_r
+	li a1,1
+	li a2,8
+	slli a1,a1,4
+	slli a2,a2,4
+	jal D_SETUP
+	
 	la a0,lamar_colec
 	li a1,19
 	li a2,10
@@ -301,6 +329,13 @@ L5:
 	la a0,mapa5
 	li a1,0
 	li a2,0
+	jal D_SETUP
+	
+	la a0,walk_r
+	li a1,4
+	li a2,12
+	slli a1,a1,4
+	slli a2,a2,4
 	jal D_SETUP
 	
 DESENHO_DO_NIVEL_END:
