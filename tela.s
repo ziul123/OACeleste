@@ -164,6 +164,7 @@ DESENHAR_END:
 #6- S8=0 Dash Baixo para esquerda, S8=1 Dash Baixo diagonal para direita.
 #7- Dash Cima
 #8- Dash Baixo
+#9- Queda pros lados
 
 #executa a animacao do movimento especificado
 #a0= movimento a ser animado
@@ -683,7 +684,7 @@ AN4_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -709,7 +710,7 @@ AN4_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -734,7 +735,7 @@ AN4_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -797,7 +798,7 @@ AN5_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -823,7 +824,7 @@ AN5_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -849,7 +850,7 @@ AN5_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -913,7 +914,7 @@ AN6_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	beqz s8,AN6_L2	
@@ -938,7 +939,7 @@ AN6_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -964,7 +965,7 @@ AN6_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1028,7 +1029,7 @@ AN7_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	beqz s8,AN7_L2	
@@ -1053,7 +1054,7 @@ AN7_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1079,7 +1080,7 @@ AN7_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1139,7 +1140,7 @@ AN8_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	beqz s8,AN8_L2	
@@ -1164,7 +1165,7 @@ AN8_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1189,7 +1190,7 @@ AN8_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1249,7 +1250,7 @@ AN9_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	beqz s8,AN9_L2	
@@ -1274,7 +1275,7 @@ AN9_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	
@@ -1300,7 +1301,7 @@ AN9_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,30
 	li a7,32
 	ecall
 	

@@ -71,6 +71,8 @@ NO_KEY:
 	
 	bnez a0,N_CAIR
 	
+	csrr s11,3073			#salva o tempo da ultima gravidade
+	
 	li a0,0
 	la t0,NIVEL
 	la t1,MAPAS
@@ -82,7 +84,7 @@ NO_KEY:
 	
 N_CAIR:
 	
-	csrr s11,3073			#salva o tempo da ultima gravidade
+	#csrr s11,3073			#salva o tempo da ultima gravidade
 	
 	la a0,PLAYER_POS
 	la a1,MATRIZ
@@ -269,13 +271,22 @@ a:
 	
 	bnez a0,a_CONT
 	
-	li a0,1
 	la t0,NIVEL
 	la t1,MAPAS
 	lb t0,0(t0)
 	slli t0,t0,2
 	add t1,t1,t0
 	lw a1,-4(t1)
+	
+	bnez s10,a_FLUT
+	
+	li a0,1
+	jal ANIMACAO
+	
+	j a_CONT
+	
+a_FLUT:
+	li a0,9
 	jal ANIMACAO
 	
 a_CONT:
@@ -306,13 +317,22 @@ d:
 
 	bnez a0,d_CONT
 	
-	li a0,1
 	la t0,NIVEL
 	la t1,MAPAS
 	lb t0,0(t0)
 	slli t0,t0,2
 	add t1,t1,t0
 	lw a1,-4(t1)
+	
+	bnez s10,d_FLUT
+	
+	li a0,1
+	jal ANIMACAO
+	
+	j d_CONT
+	
+d_FLUT:
+	li a0,9
 	jal ANIMACAO
 	
 d_CONT:
@@ -526,6 +546,16 @@ C:
 
 	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
 	
+	bnez a0,C_CONT
+	
+	li a0,6
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 	
 	li a0,1
 	li a1,1
@@ -536,7 +566,18 @@ C:
 
 	jal MV_DG_B				#move o player 1 espaco para a diagonal baixo direita
 	
+	bnez a0,C_CONT
 	
+	li a0,6
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
+C_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
 	la a0,PLAYER_POS
@@ -567,6 +608,17 @@ D:
 
 	jal MV_H				#move o jogador um espaco para direita
 	
+	bnez a0,D_CONT
+	
+	li a0,2
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -575,8 +627,19 @@ D:
 	li a5,0
 
 	jal MV_H				#move o jogador um espaco para direita
+	
+	bnez a0,D_CONT
+	
+	li a0,2
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 
-
+D_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
 	la a0,PLAYER_POS
@@ -607,6 +670,17 @@ E:
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
 	
+	bnez a0,E_CONT
+	
+	li a0,5
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -615,7 +689,19 @@ E:
 	li a5,0
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
+	
+	bnez a0,E_CONT
+	
+	li a0,5
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 
+E_CONT:
 	li s10,1
 	csrr s11,3073
 
@@ -637,6 +723,17 @@ Q:
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima esquerda
 	
+	bnez a0,Q_CONT
+	
+	li a0,5
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -645,7 +742,19 @@ Q:
 	li a5,0
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima esquerda
+	
+	bnez a0,Q_CONT
+	
+	li a0,5
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 
+Q_CONT:
 
 	li s10,1
 	csrr s11,3073
@@ -666,6 +775,17 @@ S:
 
 	jal MV_V				#move o jogador 1 espaco para baixo
 	
+	bnez a0,S_CONT
+	
+	li a0,8
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,1
 	li a1,1
 	la a2,PLAYER_POS
@@ -675,7 +795,19 @@ S:
 	li a6,0
 
 	jal MV_V				#move o jogador 1 espaco para baixo
+	
+	bnez a0,S_CONT
+	
+	li a0,8
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 
+S_CONT:
 
 	li s9,0
 	li s10,1
@@ -699,6 +831,17 @@ W:
 
 	jal MV_V				#move o jogador 1 espaco para cima
 	
+	bnez a0,W_CONT
+	
+	li a0,7
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -708,7 +851,19 @@ W:
 	li a6,0
 
 	jal MV_V				#move o jogador 1 espaco para cima
+	
+	bnez a0,W_CONT
+	
+	li a0,7
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 
+W_CONT:
 	li s10,1
 	csrr s11,3073
 
@@ -718,6 +873,7 @@ W:
 
 Z:
 	beqz s9,N_DASH
+	li s8,0					#jogador vira para a esquerda
 	
 	li s9,0
 
@@ -730,6 +886,17 @@ Z:
 
 	jal MV_DG_B				#move o jogador 1 espaco para a diagonal baixo esquerda
 	
+	bnez a0,Z_CONT
+	
+	li a0,6
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -739,6 +906,18 @@ Z:
 
 	jal MV_DG_B				#move o jogador 1 espaco para a diagonal baixo esquerda
 	
+	bnez a0,Z_CONT
+	
+	li a0,6
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+
+Z_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	la a0,PLAYER_POS
 	la a1,MATRIZ
@@ -750,7 +929,6 @@ Z:
 	csrr s11,3073			#comeca o timer da gravidade
 	
 
-	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
