@@ -9,19 +9,24 @@ ZELDA_NUM: 	.word 300
 ZELDA_NOTAS: 	60,0,60,600,59,0,59,200,60,0,60,600,59,0,59,200,60,0,60,200,62,0,62,200,63,0,63,200,65,0,65,200,67,0,67,400,60,0,60,400,67,0,67,400,72,0,72,400,70,0,70,200,68,0,68,200,67,0,67,200,65,0,65,200,63,0,63,400,62,0,62,200,60,0,60,200,59,0,59,400,55,0,55,400,60,0,60,600,59,0,59,200,60,0,60,600,59,0,59,200,60,0,60,200,62,0,62,200,63,0,63,200,65,0,65,200,67,0,67,400,60,0,60,400,65,0,65,400,68,0,68,400,67,0,67,200,65,0,65,200,63,0,63,200,62,0,62,200,62,0,62,600,60,0,60,200,60,0,60,800,60,0,60,600,59,0,59,200,60,0,60,600,59,0,59,200,60,0,60,200,62,0,62,200,63,0,63,200,65,0,65,200,67,0,67,400,60,0,60,400,67,0,67,400,72,0,72,400,70,0,70,200,68,0,68,200,67,0,67,200,65,0,65,200,63,0,63,400,62,0,62,200,60,0,60,200,59,0,59,400,55,0,55,400,60,0,60,600,59,0,59,200,60,0,60,600,59,0,59,200,60,0,60,200,62,0,62,200,63,0,63,200,65,0,65,200,67,0,67,400,60,0,60,400,65,0,65,400,68,0,68,400,67,0,67,200,65,0,65,200,63,0,63,200,62,0,62,200,62,0,62,600,60,0,60,200,60,0,60,800,70,0,70,400,67,0,67,200,68,0,68,200,70,0,70,400,67,0,67,200,68,0,68,200,70,0,70,400,75,0,75,200,74,0,74,200,72,0,72,400,70,0,70,400,72,0,72,400,68,0,68,200,70,0,70,200,68,0,68,400,67,0,67,400,68,0,65,0,68,1600,65,0,65,400,65,0,62,0,62,200,63,0,63,200,65,0,65,400,62,0,62,200,63,0,63,200,65,0,65,400,74,0,74,200,72,0,72,200,70,0,70,400,68,0,68,400,68,0,68,400,70,0,70,200,68,0,68,200,67,0,67,400,65,0,65,400,67,0,63,0,67,1600,70,0,63,200,70,200,67,0,67,200,68,0,68,200,70,0,70,400,67,0,67,200,68,0,68,200,70,0,70,400,75,0,75,200,74,0,74,200,72,0,72,400,70,0,70,400,72,0,72,400,68,0,68,200,70,0,70,200,68,0,68,400,67,0,67,400,68,0,68,1600,65,0,65,400,62,0,62,200,63,0,63,200,65,0,65,400,62,0,62,200,63,0,63,200,65,0,65,400,74,0,74,200,72,0,72,200,70,0,70,400,68,0,68,400,67,0,67,400,65,0,65,200,63,0,63,200,62,0,62,600,63,0,63,200,63,0,63,1600
 
 .text
-PLAY:	la t1,LAST_PLAYED	# endereço do last played
+#return a0= acabou (0 se nao acabou, 1 se acabou)
+PLAY_MUSICA:
+	la t1,LAST_PLAYED	# endereï¿½o do last played
 	lw t1,0(t1)		# t1 = last played
-	beq t1,zero,P_CONT	# if last played == 0 THEN continue loop (primeira ocorrência)
+	beq t1,zero,P_CONT	# if last played == 0 THEN continue loop (primeira ocorrï¿½ncia)
 
 	li a7,30		# define o syscall Time
 	ecall			# time
-	la t0,LAST_DURATION	# endereço da last duration
+	la t0,LAST_DURATION	# endereï¿½o da last duration
 	lw t0,0(t0)		# t0 = duracao da ultima nota
 	sub t1,a0,t1		# t1 = agora - quando a ultima nota foi tocada (quanto tempo passou desde a ultima nota tocada)
 	bge t1,t0,P_CONT	# if t1 >= last duration THEN continue loop (se o tempo que passou for maior que a duracao da nota, toca a proxima nota)
+	li a0,0
 	ret			# retorna ao main loop
 
-P_CONT:	bne s0,s1,P_NOTE	# if s0 != s1 THEN toca a proxima nota		# reseta os valores padrões (a musica vai ficar tocando num loop) (define o valor de retorno em a0)
+P_CONT:
+	bne s6,s5,P_NOTE	# if s0 != s5 THEN toca a proxima nota		# reseta os valores padrï¿½es (a musica vai ficar tocando num loop) (define o valor de retorno em a0)
+	li a0,1
 	ret			# volta ao main loop
 
 P_NOTE:	
@@ -32,38 +37,39 @@ P_NOTE:
 	li a7,31		# define a chamada de syscall
 	ecall			# toca a nota
 	
-	la t0,LAST_DURATION	# endereço da last duration
+	la t0,LAST_DURATION	# endereï¿½o da last duration
 	sw a1,0(t0)		# salva a duracao da nota atual no last duration
 
 	li a7,30		# define o syscall Time
 	ecall			# time
-	la t0,LAST_PLAYED	# endereço do last played
+	la t0,LAST_PLAYED	# endereï¿½o do last played
 	sw a0,0(t0)		# salva o instante atual no last played
 
-	addi s2,s2,8		# incrementa para o endereço da próxima nota
-	addi s0,s0,1		# incrementa o contador de notas
+	addi s2,s2,8		# incrementa para o endereï¿½o da prï¿½xima nota
+	addi s6,s6,1		# incrementa o contador de notas
+	li a0,0
 	ret			# volta ao main loop
 
-# define os valores padrões
+# define os valores padrï¿½es
 #a0 = musica escolida
 SET_PL: 
-	li s0,0	
-	li t6,1		# contador notas
+	li s6,0	# contador notas
+	li t6,1
 	li t5,2
 	beq a0,t6,SET_PL_LAMAR
 	beq  a0,t5,SET_PL_ZELDA
 SET_PL_JOJO:	
-	la t0,JOJO_NUM		# endereço do total de notas
-	lw s1,0(t0)		# total de notas
+	la t0,JOJO_NUM		# endereï¿½o do total de notas
+	lw s5,0(t0)		# total de notas
 	la s2,JOJO_NOTAS
-	beqz zero, SET_PL_END		# endereço das notas
-SET_PL_LAMAR:  
-	la t0,LAMAR_NUM		# endereço do total de notas
-	lw s1,0(t0)		# total de notas
+	beqz zero, SET_PL_END		# endereï¿½o das notas
+SET_PL_LAMAR:
+	la t0,LAMAR_NUM		# endereï¿½o do total de notas
+	lw s5,0(t0)		# total de notas
 	la s2,LAMAR_NOTAS	
 	beqz zero, SET_PL_END
 SET_PL_ZELDA:
-	la t0,ZELDA_NUM		# endereço do total de notas
-	lw s1,0(t0)		# total de notas
+	la t0,ZELDA_NUM		# endereï¿½o do total de notas
+	lw s5,0(t0)		# total de notas
 	la s2,ZELDA_NOTAS	
 SET_PL_END:	ret

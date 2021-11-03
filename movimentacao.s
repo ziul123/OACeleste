@@ -574,5 +574,5 @@ PAREDE_LADO_END:
 	ret
 
 	
-.include "extras.s"
+
 	

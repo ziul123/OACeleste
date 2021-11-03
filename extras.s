@@ -89,6 +89,10 @@ MORANGO:
 
 	li a0,1
 	jal SET_PL
+	
+	la t0,TOCANDO
+	li t1,1
+	sb t1,0(t0)
 
 MORANGO_END:
 	lw ra,0(sp)
@@ -122,4 +126,4 @@ CHAVE_END:
 	ret
 	
 	
-.include "musica.s"
+

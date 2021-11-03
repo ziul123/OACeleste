@@ -381,6 +381,9 @@ L5:
 	slli a2,a2,4
 	jal D_SETUP
 	
+	la t0,MOV_COUNT
+	sb zero,0(t0)
+	
 DESENHO_DO_NIVEL_END:
 	mv a1,zero
 	mv a2,zero
@@ -399,6 +402,8 @@ SETUP:
 	sw ra,0(sp)
 	sw s0,4(sp)
 
+	li s9,1
+
 	mv s0,a0
 
 	jal DESENHO_DO_NIVEL
@@ -412,4 +417,3 @@ SETUP_END:
 	addi sp,sp,8
 	ret
 	
-.include "tela.s"

@@ -7,9 +7,11 @@ PLAYER_POS:	.byte 1,5		#coluna,linha
 M_SIZE:		.word 15,20		#n_linhas, n_colunas
 NIVEL:		.byte 1
 LAMAR_COUNT:.byte 0
+TOCANDO:	.byte 0
 
 esp:		.string " "
 n:			.string "\n"
+ganhou:		.string "ganhou"
 
 test:		.string "aqui"
 
@@ -20,21 +22,60 @@ MAIN:
 
 	la a0,MATRIZ
 	la a1,M_SIZE
-	jal M_SHOW
+	#jal M_SHOW
 	
 	la a0,n
 	li a7,4
-	ecall
-
+	#ecall
+	
+	
+#s5 = musica
+#s6	= musica
 #s7 = timer do inimigo
 #s8 = lado que o jogador esta virado (0 para esquerda, 1 para direita)
 #s9 = dash (0 nao pode, 1 pode)
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade
 LOOP:
-	#jal INIMIGO_CTRL
-	jal PLAY
+	la t0,NIVEL
+	lb t0,0(t0)
+	li t1,5
+	bne t0,t1,N_NIVEL_5
+	jal INIMIGO_CTRL
+	li t0,1
+	beq a0,t0,END
+N_NIVEL_5:
+	la t0,TOCANDO
+	lb t0,0(t0)
+	beqz t0,PULA_MUSICA
+	jal PLAY_MUSICA
+PULA_MUSICA:
+	bnez s9,TEM_DASH
+	
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	
+	la a0,cafe
+	li a2,19
+	li a3,0
+	slli a2,a2,4
+	slli a3,a3,4
+	jal APAGAR
+	j TEM_DASH_CONT
 
+TEM_DASH:
+	la a0,cafe
+	li a1,19
+	li a2,0
+	slli a1,a1,4
+	slli a2,a2,4
+	jal D_SETUP
+
+TEM_DASH_CONT:
 	la t0,PLAYER_POS
 	lb t0,0(t0)
 	li t1,19
@@ -47,12 +88,12 @@ LOOP:
 	
 	la a0,MATRIZ
 	la a1,M_SIZE
-	jal M_SHOW
+	#jal M_SHOW
 
 	
 	la a0,n
 	li a7,4
-	ecall
+	#ecall
 	
 NO_KEY:	
 	beqz s10,N_GRAV
@@ -86,7 +127,6 @@ NO_KEY:
 	
 N_CAIR:
 	
-	#csrr s11,3073			#salva o tempo da ultima gravidade
 	
 	la a0,PLAYER_POS
 	la a1,MATRIZ
@@ -103,12 +143,12 @@ N_RES_DASH:
 
 	la a0,MATRIZ
 	la a1,M_SIZE
-	jal M_SHOW
+	#jal M_SHOW
 	
 	
 	la a0,n
 	li a7,4
-	ecall
+	#ecall
 	
 	lw t0,0(sp)
 	addi sp,sp,4
@@ -130,6 +170,9 @@ PROX_NIVEL:
 	j LOOP
 
 END:
+	la a0,ganhou
+	li a7,4
+	ecall
 	li a7,10
 	ecall
 
@@ -298,7 +341,7 @@ a_CONT:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
-	xori s9,a0,1
+	#xori s9,a0,1
 	
 	csrr s11,3073			#comeca o timer da gravidade
 	
@@ -345,7 +388,7 @@ d_CONT:
 	la a2,M_SIZE
 	jal FLUTUANDO			#checa se esta flutuando depois de mover
 	mv s10,a0
-	xori s9,a0,1
+	#xori s9,a0,1
 	
 	csrr s11,3073			#comeca o timer da gravidade
 
@@ -963,6 +1006,10 @@ MORREU:
 	j LOOP
 
 
+.include "movimentacao.s"
+.include "inimigo.s"
 .include "show.s"
 .include "setup.s"
-.include "inimigo.s"
+.include "tela.s"
+.include "musica.s"
+.include "extras.s"
