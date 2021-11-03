@@ -1,3 +1,4 @@
+.include "SYSTEM/MACROSv21.s"
 .data
 
 #15 linhas, 20 colunas
@@ -9,7 +10,7 @@ NIVEL:		.byte 1
 LAMAR_COUNT:.byte 0
 TOCANDO:	.byte 0
 
-
+LAMARES:	.string "Lamares coletados:"
 
 .text
 
@@ -66,6 +67,23 @@ MENU_INICIO:
 #s10 = flututando (0 se nao estiver, 1 se estiver)
 #s11 = timer da gravidade
 LOOP:
+	la a0,LAMARES
+	li a1,0
+	li a2,0
+	li a3,0x0000C707
+	li a4,0
+	li a7,104
+	ecall
+	
+	la t0,LAMAR_COUNT
+	lb a0,0(t0)
+	li a1,150
+	li a2,0
+	li a3,0x00000007
+	li a4,0
+	li a7,101
+	ecall
+	
 	la t0,NIVEL
 	lb t0,0(t0)
 	li t1,5
@@ -1029,3 +1047,4 @@ MORREU:
 .include "musica.s"
 .include "extras.s"
 .include "cutscenes.s"
+.include "SYSTEM/SYSTEMv21.s"

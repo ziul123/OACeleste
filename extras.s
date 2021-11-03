@@ -1,6 +1,3 @@
-.data
-morango:	.string "voce coletou um lamar!"
-
 .text
 
 
@@ -86,6 +83,11 @@ MOLA_END:
 MORANGO:
 	addi sp,sp,-4
 	sw ra,0(sp)
+	
+	la t0,LAMAR_COUNT
+	lb t1,0(t0)
+	addi t1,t1,1
+	sb t1,0(t0)
 
 	li a0,1
 	jal SET_PL
