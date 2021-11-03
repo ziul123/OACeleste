@@ -10,6 +10,7 @@
 MOVIMENTOS:	.byte 0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,3,2,2,2,2,2,2,3,3
 MOV_COUNT:	.byte 0
 INIMIGO_POS:.byte 1,12	#coluna, linha
+INIMIGO_POS_A:.byte 1,12
 
 .text
 

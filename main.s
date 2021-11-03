@@ -6,10 +6,11 @@
 PLAYER_POS:	.byte 1,5		#coluna,linha
 M_SIZE:		.word 15,20		#n_linhas, n_colunas
 NIVEL:		.byte 1
+LAMAR_COUNT:.byte 0
 
 esp:		.string " "
 n:			.string "\n"
-morreu:		.string "morreu\n"
+
 test:		.string "aqui"
 
 .text
@@ -32,6 +33,7 @@ MAIN:
 #s11 = timer da gravidade
 LOOP:
 	#jal INIMIGO_CTRL
+	jal PLAY
 
 	la t0,PLAYER_POS
 	lb t0,0(t0)
@@ -56,7 +58,7 @@ NO_KEY:
 	beqz s10,N_GRAV
 	csrr t0,3073
 	sub t0,t0,s11			#s11 tem o tempo da ultima gravidade
-	li t1,300
+	li t1,180
 	bltu t0,t1,LOOP
 
 	li a0,1
@@ -952,10 +954,13 @@ GET_KEY_NO_KEY:
 
 
 MORREU:
-	la a0,morreu
-	li a7,4
-	ecall
-	j END
+	la t0,LAMAR_COUNT
+	sb zero,0(t0)
+	
+	la t0,NIVEL
+	lb a0,0(t0)
+	jal SETUP
+	j LOOP
 
 
 .include "show.s"

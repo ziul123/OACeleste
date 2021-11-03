@@ -61,7 +61,7 @@ SET_PL_LAMAR:
 	la t0,LAMAR_NUM		# endereço do total de notas
 	lw s1,0(t0)		# total de notas
 	la s2,LAMAR_NOTAS	
-	beqz zero, FINAL
+	beqz zero, SET_PL_END
 SET_PL_ZELDA:
 	la t0,ZELDA_NUM		# endereço do total de notas
 	lw s1,0(t0)		# total de notas

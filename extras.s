@@ -87,9 +87,8 @@ MORANGO:
 	addi sp,sp,-4
 	sw ra,0(sp)
 
-	la a0,morango
-	li a7,4
-	ecall
+	li a0,1
+	jal SET_PL
 
 MORANGO_END:
 	lw ra,0(sp)
@@ -121,3 +120,6 @@ CHAVE_END:
 	lw ra,0(sp)
 	addi sp,sp,4
 	ret
+	
+	
+.include "musica.s"
