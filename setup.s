@@ -387,7 +387,6 @@ L5:
 DESENHO_DO_NIVEL_END:
 	mv a1,zero
 	mv a2,zero
-	#jal D_SETUP
 	
 	lw ra,0(sp)
 	addi sp,sp,4

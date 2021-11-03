@@ -21,14 +21,13 @@ PLAY_CUTSCENE:
 	mv s0,a0
 
 PLAY_CUTSCENE_LOOP:
-	#jal PLAY_MUSICA
+	jal PLAY_MUSICA
 
 	csrr t0,3073
 	la t1,TEMPO_DA_ULTIMA
 	lw t2,0(t1)
 	sub t0,t0,t2
 	li t3,40
-	jal PLAY_MUSICA
 	bltu t0,t3,PLAY_CUTSCENE_LOOP
 	
 	
@@ -74,6 +73,11 @@ CUTSCENE_SETUP:
 	sw ra,0(sp)
 
 	la t1,NUMERO_DE_FRAMES
+	
+	la t2,CONTADOR_DE_FRAME
+	sw zero,0(t2)
+	
+	
 
 	li t0,0
 	beq a0,t0,C_SETUP_JOJO
@@ -106,7 +110,7 @@ C_SETUP_INICIO:
 	li t3,959
 	sw t3,0(t1)
 	
-	li a0,1
+	li a0,2
 	jal SET_PL
 	
 	li a1,0
@@ -121,7 +125,7 @@ C_SETUP_FINAL:
 	li t3,1018
 	sw t3,0(t1)
 	
-	li a0,1
+	li a0,2
 	jal SET_PL
 	
 	li a1,0

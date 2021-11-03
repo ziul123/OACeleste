@@ -9,11 +9,7 @@ NIVEL:		.byte 1
 LAMAR_COUNT:.byte 0
 TOCANDO:	.byte 0
 
-esp:		.string " "
-n:			.string "\n"
-ganhou:		.string "ganhou"
 
-test:		.string "aqui"
 
 .text
 
@@ -22,14 +18,45 @@ MAIN:
 	jal CUTSCENE_SETUP
 	jal PLAY_CUTSCENE
 
-	la a0,MATRIZ
-	la a1,M_SIZE
-	#jal M_SHOW
+	la a0,menu
+	li a1,0
+	li a2,0
+	jal D_SETUP
 	
-	la a0,n
-	li a7,4
-	#ecall
+MENU_LOOP:
+	jal PLAY_MUSICA
+
+	li t0,0xFF200000		#endereco do controle do teclado
+	lw t1,0(t0)
+	andi t1,t1,0x01
+	li a0,1
+	beqz t1,MENU_LOOP		#se nao foi pressionada tecla, pula
+	lw t1,4(t0)					#t1 = tecla pressionada pelo usuario
+
+	li t0,'e'
+	beq t1,t0,MENU_SAIDA
 	
+	li t0,'i'
+	beq t1,t0,MENU_INICIO
+	
+	j MENU_LOOP
+	
+MENU_SAIDA:
+	li a7,10
+	ecall
+	
+MENU_INICIO:
+	li a0,1
+	jal CUTSCENE_SETUP
+	jal PLAY_CUTSCENE
+
+	li a0,1
+	jal SETUP
+	
+	la t0,NIVEL
+	li t1,1
+	sb t1,0(t0)
+
 	
 #s5 = musica
 #s6	= musica
@@ -88,14 +115,6 @@ TEM_DASH_CONT:
 	bltz a0,END
 	bgtz a0,NO_KEY
 	
-	la a0,MATRIZ
-	la a1,M_SIZE
-	#jal M_SHOW
-
-	
-	la a0,n
-	li a7,4
-	#ecall
 	
 NO_KEY:	
 	beqz s10,N_GRAV
@@ -142,15 +161,6 @@ N_RES_DASH:
 	addi sp,sp,-4
 	sw a1,0(sp)
 	
-
-	la a0,MATRIZ
-	la a1,M_SIZE
-	#jal M_SHOW
-	
-	
-	la a0,n
-	li a7,4
-	#ecall
 	
 	lw t0,0(sp)
 	addi sp,sp,4
@@ -172,9 +182,10 @@ PROX_NIVEL:
 	j LOOP
 
 END:
-	la a0,ganhou
-	li a7,4
-	ecall
+	li a0,2
+	jal CUTSCENE_SETUP
+	jal PLAY_CUTSCENE
+	
 	li a7,10
 	ecall
 
@@ -997,10 +1008,13 @@ GET_KEY_NO_KEY:
 
 
 
-
 MORREU:
 	la t0,LAMAR_COUNT
 	sb zero,0(t0)
+	
+	li a0,3
+	jal CUTSCENE_SETUP
+	jal PLAY_CUTSCENE
 	
 	la t0,NIVEL
 	lb a0,0(t0)
@@ -1010,7 +1024,6 @@ MORREU:
 
 .include "movimentacao.s"
 .include "inimigo.s"
-.include "show.s"
 .include "setup.s"
 .include "tela.s"
 .include "musica.s"
