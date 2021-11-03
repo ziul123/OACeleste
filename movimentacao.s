@@ -327,8 +327,17 @@ MV_DG_C_MOLA:
 	sb s1,0(a2)				#muda a coluna do objeto
 	sb s0,1(a2)				#muda a linha do objeto
 	
+	li a0,4
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	jal MOLA
-	li a0,0
+	li a0,1
 
 MV_DG_C_END:
 	lw ra,0(sp)

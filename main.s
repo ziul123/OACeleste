@@ -153,9 +153,6 @@ GET_KEY:
 	
 	li t0,'q'
 	beq t1,t0,q
-
-	li t0,'s'
-	beq t1,t0,s
 	
 	li t0,'w'
 	beq t1,t0,w
@@ -202,12 +199,20 @@ T1:
 	li a0,1
 	jal SETUP
 	
+	la t0,NIVEL
+	li t1,1
+	sb t1,0(t0)
+	
 	li a0,0
 	j GET_KEY_END
 
 T2:
 	li a0,2
 	jal SETUP
+	
+	la t0,NIVEL
+	li t1,2
+	sb t1,0(t0)
 	
 	li a0,0
 	j GET_KEY_END
@@ -216,6 +221,10 @@ T3:
 	li a0,3
 	jal SETUP
 	
+	la t0,NIVEL
+	li t1,3
+	sb t1,0(t0)
+	
 	li a0,0
 	j GET_KEY_END
 
@@ -223,12 +232,20 @@ T4:
 	li a0,4
 	jal SETUP
 	
+	la t0,NIVEL
+	li t1,4
+	sb t1,0(t0)
+	
 	li a0,0
 	j GET_KEY_END
 
 T5:
 	li a0,5
 	jal SETUP
+	
+	la t0,NIVEL
+	li t1,5
+	sb t1,0(t0)
 	
 	li a0,0
 	j GET_KEY_END
@@ -310,6 +327,7 @@ d_CONT:
 
 
 e:
+	li s8,1					#jogador vira para a direita
 	la a0,PLAYER_POS
 	la a1,MATRIZ
 	la a2,M_SIZE
@@ -327,10 +345,22 @@ e_PULO_PAREDE:
 
 	jal MV_DG_C				#move o player 1 espaco para a diagonal cima direita
 	
+	bnez a0,e_CONT
+	
+	li a0,4
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
+e_CONT:
+	
 	li s10,1				#depois de pular, esta flutuando
 	csrr s11,3073
 	
-	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
@@ -340,6 +370,7 @@ p:
 
 
 q:
+	li s8,0					#jogador vira para a esquerda
 	la a0,PLAYER_POS
 	la a1,MATRIZ
 	la a2,M_SIZE
@@ -357,29 +388,25 @@ q_PULO_PAREDE:
 
 	jal MV_DG_C
 	
+	bnez a0,q_CONT
+	
+	li a0,4
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
+q_CONT:
+	
 	li s10,1
 	csrr s11,3073
 	
-	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
-
-s:
-	li a0,1
-	li a1,1
-	la a2,PLAYER_POS
-	la a3,MATRIZ
-	la a4,M_SIZE
-	li a5,0
-	li a6,0
-
-	jal MV_V
-
-#tem que tirar
-
-	li a0,0
-	j GET_KEY_END
 
 w:
 	la a0,PLAYER_POS
@@ -420,6 +447,7 @@ w_CONT:
 	
 A:
 	beqz s9,N_DASH
+	li s8,0					#jogador vira para a esquerda
 	
 	li s9,0
 	
@@ -432,6 +460,17 @@ A:
 
 	jal MV_H				#move o jogador um espaco para esquerda
 	
+	bnez a0,A_CONT
+	
+	li a0,2
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -441,7 +480,18 @@ A:
 
 	jal MV_H				#move o jogador um espaco para esquerda
 	
-
+	bnez a0,A_CONT
+	
+	li a0,2
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
+A_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
 	
 	la a0,PLAYER_POS
@@ -453,12 +503,12 @@ A:
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 
 C:
 	beqz s9,N_DASH
+	li s8,1					#jogador vira para a direita
 	
 	li s9,0
 	
@@ -493,13 +543,13 @@ C:
 
 	csrr s11,3073			#comeca o timer da gravidade
 	
-	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
 
 D:
 	beqz s9,N_DASH
+	li s8,1					#jogador vira para a direita
 	
 	li s9,0
 
@@ -534,12 +584,12 @@ D:
 	csrr s11,3073			#comeca o timer da gravidade
 
 
-	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
 E:
 	beqz s9,N_DASH
+	li s8,1					#jogador vira para a direita
 	
 	li s9,0
 
@@ -564,12 +614,12 @@ E:
 	li s10,1
 	csrr s11,3073
 
-	li s8,1					#jogador vira para a direita
 	li a0,0
 	j GET_KEY_END
 
 Q:
 	beqz s9,N_DASH
+	li s8,0					#jogador vira para a esquerda
 	
 	li s9,0
 
@@ -595,7 +645,6 @@ Q:
 	li s10,1
 	csrr s11,3073
 	
-	li s8,0					#jogador vira para a esquerda
 	li a0,0
 	j GET_KEY_END
 

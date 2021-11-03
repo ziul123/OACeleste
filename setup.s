@@ -183,6 +183,8 @@ DESENHO_DO_NIVEL:
 	sw ra,0(sp)
 	
 	la t1,PLAYER_POS
+	
+	la t3,PLAYER_POS_A
 
 	li t0,1
 	beq a0,t0,L1
@@ -202,8 +204,10 @@ DESENHO_DO_NIVEL:
 L1:
 	li t2,1
 	sb t2,0(t1)
+	sb t2,0(t3)
 	li t2,5
 	sb t2,1(t1)
+	sb t2,1(t3)
 	
 	la a0,mapa1
 	li a1,0
@@ -229,8 +233,10 @@ L1:
 L2:
 	li t2,1
 	sb t2,0(t1)
+	sb t2,0(t3)
 	li t2,12
 	sb t2,1(t1)
+	sb t2,1(t3)
 	
 	la a0,mapa2
 	li a1,0
@@ -256,8 +262,10 @@ L2:
 L3:
 	li t2,1
 	sb t2,0(t1)
+	sb t2,0(t3)
 	li t2,7
 	sb t2,1(t1)
+	sb t2,1(t3)
 	
 	la a0,mapa3
 	li a1,0
@@ -290,8 +298,10 @@ L3:
 L4:
 	li t2,1
 	sb t2,0(t1)
+	sb t2,0(t3)
 	li t2,8
 	sb t2,1(t1)
+	sb t2,1(t3)
 	
 	la a0,mapa4
 	li a1,0
@@ -317,8 +327,10 @@ L4:
 L5:
 	li t2,4
 	sb t2,0(t1)
+	sb t2,0(t3)
 	li t2,12
 	sb t2,1(t1)
+	sb t2,1(t3)
 	
 	la t1,INIMIGO_POS
 	li t2,1

@@ -454,7 +454,7 @@ AN2_CONT1:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,30
+	li a0,20
 	li a7,32
 	ecall
 	
@@ -480,7 +480,7 @@ AN2_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,30
+	li a0,20
 	li a7,32
 	ecall
 	
@@ -506,7 +506,7 @@ AN2_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,30
+	li a0,20
 	li a7,32
 	ecall
 	
