@@ -248,7 +248,12 @@ a:
 	bnez a0,a_CONT
 	
 	li a0,1
-	la a1,mapa1
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
 	jal ANIMACAO
 	
 a_CONT:
@@ -280,7 +285,12 @@ d:
 	bnez a0,d_CONT
 	
 	li a0,1
-	la a1,mapa1
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
 	jal ANIMACAO
 	
 d_CONT:

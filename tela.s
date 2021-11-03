@@ -229,7 +229,7 @@ AN0_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,30
+	li a0,10
 	li a7,32
 	ecall
 	beqz s8,AN0_L2	
@@ -254,7 +254,7 @@ AN0_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,30
+	li a0,10
 	li a7,32
 	ecall
 	
@@ -280,7 +280,7 @@ AN0_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,30
+	li a0,10
 	li a7,32
 	ecall
 	
@@ -340,7 +340,7 @@ AN1_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,150
+	li a0,60
 	li a7,32
 	ecall
 	
@@ -366,7 +366,7 @@ AN1_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,60
 	li a7,32
 	ecall
 	
@@ -392,7 +392,7 @@ AN1_CONT5:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,150
+	li a0,60
 	li a7,32
 	ecall
 	
@@ -569,7 +569,7 @@ AN3_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,50
+	li a0,10
 	li a7,32
 	ecall
 	beqz s8,AN3_L2	
@@ -594,7 +594,7 @@ AN3_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,50
+	li a0,10
 	li a7,32
 	ecall
 	
@@ -619,7 +619,7 @@ AN3_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,50
+	li a0,10
 	li a7,32
 	ecall
 	

@@ -85,9 +85,17 @@ MV_H_MOLA:
 	sw zero,0(t4)			#coloca 0 no endereco original
 	sb t1,0(a2)				#muda a posicao do objeto
 	
+	li a0,1
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	jal MOLA
-	li a0,0
-	li a0,0
+	li a0,1
 
 MV_H_END:
 	lw ra,0(sp)
