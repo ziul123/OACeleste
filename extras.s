@@ -109,7 +109,13 @@ CHAVE:
 	la t0,LINHA10
 	sw zero,72(t0)				#escreve 0 no lugar da porta
 	
-	#apagar porta
+	la a0,computador
+	la a1,mapa4
+	li a2,18
+	li a3,10
+	slli a2,a2,4
+	slli a3,a3,4
+	jal APAGAR
 
 CHAVE_END:
 	lw ra,0(sp)

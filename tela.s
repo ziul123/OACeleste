@@ -17,6 +17,8 @@ PLAYER_POS_A:	.byte 1,5
 .include "sprites/jump_l.data"
 .include "sprites/lamar_colec.data"
 .include "sprites/cafe.data"
+.include "sprites/computador.data"
+.include "sprites/disquete.data"
 
 MAPAS:	.word mapa1,mapa2,mapa3,mapa4,mapa5
 
