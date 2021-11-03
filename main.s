@@ -69,6 +69,14 @@ NO_KEY:
 
 	jal MV_V				#desce o player por 1 posicao
 	
+	bnez a0,N_CAIR
+	
+	li a0,0
+	la a1,mapa1
+	jal ANIMACAO
+	
+N_CAIR:
+	
 	csrr s11,3073			#salva o tempo da ultima gravidade
 	
 	la a0,PLAYER_POS
@@ -240,7 +248,8 @@ a:
 	bnez a0,a_CONT
 	
 	li a0,1
-	#jal ANIMACAO
+	la a1,mapa1
+	jal ANIMACAO
 	
 a_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
@@ -271,7 +280,8 @@ d:
 	bnez a0,d_CONT
 	
 	li a0,1
-	#jal ANIMACAO
+	la a1,mapa1
+	jal ANIMACAO
 	
 d_CONT:
 	bnez s10,JA_FLUTUANDO	#se ja esta flutuando, termina
@@ -380,7 +390,18 @@ w_PULO_PAREDE:
 
 	jal MV_V
 
-
+	bnez a0,w_CONT
+	
+	li a0,3
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
+w_CONT:
 	li s10,1
 	csrr s11,3073
 

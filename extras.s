@@ -26,6 +26,15 @@ MOLA:
 	
 	jal MV_V
 	
+	li a0,3
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -36,6 +45,15 @@ MOLA:
 	
 	jal MV_V
 	
+	li a0,3
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
+	
 	li a0,-1
 	li a1,1
 	la a2,PLAYER_POS
@@ -45,6 +63,15 @@ MOLA:
 	li a6,0
 	
 	jal MV_V
+	
+	li a0,3
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
+	jal ANIMACAO
 	
 
 MOLA_END:
