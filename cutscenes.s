@@ -14,18 +14,38 @@ NUMERO_DE_FRAMES:	.word 0
 #toca uma cutscene
 #a0= file descriptor
 PLAY_CUTSCENE:
-	addi sp,sp,-4
+	addi sp,sp,-8
 	sw ra,0(sp)
+	sw s0,4(sp)
+
+	mv s0,a0
 
 PLAY_CUTSCENE_LOOP:
+
 	csrr t0,3073
 	la t1,TEMPO_DA_ULTIMA
+	lw t2,0(t1)
+	sub t0,t0,t2
+	li t3,40
+	bltu t0,t3,PLAY_CUTSCENE_LOOP
+	
+	
+	
+	mv a0,s0	
+	li a1,0xFF000000
+	li a2,76800
+	li a7,63
+	ecall
+
 
 PLAY_CUTSCENE_END:
 	lw ra,0(sp)
-	addi sp,sp,4
+	lw s0,4(sp)
+	addi sp,sp,8
 	ret
 	
+
+
 
 #0 -> jojo	
 #1 -> inicio
@@ -93,6 +113,9 @@ C_SETUP_FINAL:
 C_SETUP_MORREU:
 	li t3,82
 	sw t3,0(t1)
+	
+	li a0,3
+	jal SET_PL
 	
 	la a0,CUTSCENE_MORREU
 	ecall

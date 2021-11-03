@@ -7,6 +7,7 @@ PLAYER_POS_A:	.byte 1,5
 .include "mapas/mapa3.data"
 .include "mapas/mapa4.data"
 .include "mapas/mapa5.data"
+.include "mapas/menu.data"
 
 
 .include "sprites/walk_r.data"
