@@ -235,9 +235,7 @@ AN0_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,10
-	li a7,32
-	ecall
+
 	beqz s8,AN0_L2	
 	la a0,jump_r
 	beqz zero, AN0_CONT2
@@ -260,9 +258,6 @@ AN0_CONT3:
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,10
-	li a7,32
-	ecall
 	
 	beqz s8,AN0_L4
 	la a0,jump_r
@@ -286,9 +281,6 @@ AN0_CONT5:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,10
-	li a7,32
-	ecall
 	
 	beqz s8,AN0_L6
 	la a0,jump_r
