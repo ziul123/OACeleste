@@ -1243,21 +1243,22 @@ AN9_CONT0:
 	
 	beqz s8,AN9_L1
 	la a0,jump_r
-	addi a1,a2,1284
-	beqz zero, AN9_CONT1
+	addi a1,a2,4
+	beqz zero AN9_CONT1
 AN9_L1:
 	la a0,jump_l
-	addi a1,a2,1276
+	addi a1,a2,-4
 AN9_CONT1:
 	mv a2,a3
 	jal D_SETUP
 
-	li a0,30
+	li a0,60
 	li a7,32
 	ecall
+	
 	beqz s8,AN9_L2	
 	la a0,jump_r
-	beqz zero, AN9_CONT2
+	beqz zero AN9_CONT2
 AN9_L2:
 	la a0,jump_l
 AN9_CONT2:	
@@ -1268,22 +1269,22 @@ AN9_CONT2:
 	
 	beqz s8,AN9_L3	
 	la a0,jump_r
-	addi a1,a2,1284
-	beqz zero, AN9_CONT3
+	addi a1,a2,4
+	beqz zero AN9_CONT3
 AN9_L3:	
 	la a0,jump_l
-	addi a1,a2,1276
+	addi a1,a2,-4
 AN9_CONT3:	
 	mv a2,a3
 	jal D_SETUP
 	
-	li a0,30
+	li a0,60
 	li a7,32
 	ecall
 	
 	beqz s8,AN9_L4
 	la a0,jump_r
-	beqz zero, AN9_CONT4
+	beqz zero AN9_CONT4
 AN9_L4:
 	la a0,jump_l
 AN9_CONT4:		
@@ -1294,16 +1295,16 @@ AN9_CONT4:
 	
 	beqz s8,AN9_L5
 	la a0,jump_r
-	addi a1,a2,1284
-	beqz zero, AN9_CONT5
+	addi a1,a2,4
+	beqz zero AN9_CONT5
 AN9_L5:	
 	la a0,jump_l
-	addi a1,a2,1276
+	addi a1,a2,-4
 AN9_CONT5:	
 	mv a2,a3
 	jal D_SETUP
-
-	li a0,30
+	
+	li a0,60
 	li a7,32
 	ecall
 	
@@ -1319,25 +1320,23 @@ AN9_CONT6:
 	jal APAGAR
 	
 	la t0,PLAYER_POS_A
-	lb t1,1(t0)
-	lb t2,0(t0)
-	addi t1,t1,1
-	sb t1,1(t0)
+	lb t1,0(t0)
 	beqz s8,AN9_L7
-	addi t2,t2,1
+	addi t1,t1,1
+	sb t1,0(t0)
 	la a0,jump_r
 	beqz zero AN9_CONT7
 AN9_L7:
-	addi t2,t2,-1
+	addi t1,t1,-1
+	sb t1,0(t0)
 	la a0,jump_l
-AN9_CONT7:
-	sb t2,0(t0)		
-	mv a1,t2
-	mv a2,t1
+AN9_CONT7:		
+	mv a1,t1
+	lb a2,1(t0)
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
 	slli a2,a2,4
 	jal D_SETUP
-		
+	
 	j ANIMACAO_END
 
 ANIMACAO_END:
