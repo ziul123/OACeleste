@@ -72,7 +72,12 @@ NO_KEY:
 	bnez a0,N_CAIR
 	
 	li a0,0
-	la a1,mapa1
+	la t0,NIVEL
+	la t1,MAPAS
+	lb t0,0(t0)
+	slli t0,t0,2
+	add t1,t1,t0
+	lw a1,-4(t1)
 	jal ANIMACAO
 	
 N_CAIR:
