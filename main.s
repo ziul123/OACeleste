@@ -18,7 +18,9 @@ test:		.string "aqui"
 .text
 
 MAIN:
-	
+	li a0,0
+	jal CUTSCENE_SETUP
+	jal PLAY_CUTSCENE
 
 	la a0,MATRIZ
 	la a1,M_SIZE
@@ -1013,3 +1015,4 @@ MORREU:
 .include "tela.s"
 .include "musica.s"
 .include "extras.s"
+.include "cutscenes.s"

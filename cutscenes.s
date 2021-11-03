@@ -27,6 +27,7 @@ PLAY_CUTSCENE_LOOP:
 	lw t2,0(t1)
 	sub t0,t0,t2
 	li t3,40
+	jal PLAY_MUSICA
 	bltu t0,t3,PLAY_CUTSCENE_LOOP
 	
 	
@@ -36,6 +37,18 @@ PLAY_CUTSCENE_LOOP:
 	li a2,76800
 	li a7,63
 	ecall
+	
+	csrr t0,3073
+	la t1,TEMPO_DA_ULTIMA
+	sw t0,0(t1)
+	
+	la t0,CONTADOR_DE_FRAME
+	lw t1,0(t0)
+	la t2,NUMERO_DE_FRAMES
+	lw t2,0(t2)
+	addi t1,t1,1
+	bge t1,t2,PLAY_CUTSCENE_END
+	sw t1,0(t0)
 
 
 PLAY_CUTSCENE_END:
