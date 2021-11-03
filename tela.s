@@ -199,7 +199,10 @@ ANIMACAO:
 	beq a0,t0,ANIMACAO_7
 	
 	li t0,8
-	beq a0,t0,ANIMACAO_8	
+	beq a0,t0,ANIMACAO_8
+	
+	li t0,9
+	beq a0,t0,ANIMACAO_9
 	
 ANIMACAO_0:
 
@@ -1213,6 +1216,121 @@ AN8_L7:
 AN8_CONT7:		
 	lb a1,0(t0)
 	lb a2,1(t0)
+	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
+	slli a2,a2,4
+	jal D_SETUP
+		
+	j ANIMACAO_END
+	
+ANIMACAO_9:
+	la t0,PLAYER_POS_A
+	lb t1,0(t0)
+	beqz s8,AN9_L0
+	la a0,jump_r
+	beqz zero, AN9_CONT0
+AN9_L0:	
+	la a0,jump_l
+AN9_CONT0:
+	mv a1,s0
+	mv a2,t1
+	lb a3,1(t0)
+	slli a2,a2,4			#a tela eh dividida em quadrados de 16x16
+	slli a3,a3,4
+	jal APAGAR
+	
+	beqz s8,AN9_L1
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN9_CONT1
+AN9_L1:
+	la a0,jump_l
+	addi a1,a2,1276
+AN9_CONT1:
+	mv a2,a3
+	jal D_SETUP
+
+	li a0,150
+	li a7,32
+	ecall
+	beqz s8,AN9_L2	
+	la a0,jump_r
+	beqz zero, AN9_CONT2
+AN9_L2:
+	la a0,jump_l
+AN9_CONT2:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	beqz s8,AN9_L3	
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN9_CONT3
+AN9_L3:	
+	la a0,jump_l
+	addi a1,a2,1276
+AN9_CONT3:	
+	mv a2,a3
+	jal D_SETUP
+	
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN9_L4
+	la a0,jump_r
+	beqz zero, AN9_CONT4
+AN9_L4:
+	la a0,jump_l
+AN9_CONT4:		
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	beqz s8,AN9_L5
+	la a0,jump_r
+	addi a1,a2,1284
+	beqz zero, AN9_CONT5
+AN9_L5:	
+	la a0,jump_l
+	addi a1,a2,1276
+AN9_CONT5:	
+	mv a2,a3
+	jal D_SETUP
+
+	li a0,150
+	li a7,32
+	ecall
+	
+	beqz s8,AN9_L6
+	la a0,jump_r
+	beqz zero AN9_CONT6
+AN9_L6:	
+	la a0,jump_l
+AN9_CONT6:	
+	mv a3,a2
+	mv a2,a1
+	mv a1,s0
+	jal APAGAR
+	
+	la t0,PLAYER_POS_A
+	lb t1,1(t0)
+	lb t2,0(t0)
+	addi t1,t1,1
+	sb t1,1(t0)
+	beqz s8,AN9_L7
+	addi t2,t2,1
+	la a0,jump_r
+	beqz zero AN9_CONT7
+AN9_L7:
+	addi t2,t2,-1
+	la a0,jump_l
+AN9_CONT7:
+	sb t2,0(t0)		
+	mv a1,t2
+	mv a2,t1
 	slli a1,a1,4			#a tela eh dividida em quadrados de 16x16
 	slli a2,a2,4
 	jal D_SETUP
